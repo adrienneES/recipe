@@ -1,0 +1,40 @@
+{
+  "name": "recipe-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prestart" : "babel-node buildScripts/startMessage.js",
+    "start": "npm-run-all  --parallel open:src security-check",
+    "open:src": "babel-node buildScripts/server.js",
+    "security-check": "nsp check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adrienneES/recipe.git"
+  },
+  "author": "Adri Skrtic <adri.curtis@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adrienneES/recipe/issues"
+  },
+  "homepage": "https://github.com/adrienneES/recipe#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "npm-run-all": "^4.1.2",
+    "open": "0.0.5"
+  },
+  "devDependencies" : {
+    "babel-cli" : "6.14.0",
+    "babel-core" : "6.14.0",
+    "babel-loader" : "6.2.5",
+    "babel-preset-latest" : "6.14.0",
+    "babel-register" : "6.14.0",
+    "numeral": "1.5.3",
+    "webpack": "1.13.2",
+    "webpack-dev-middleware": "1.8.4",
+    "webpack-hot-middleware": "2.13.0",
+    "webpack-md5-hash": "0.0.5"
+  }
+}

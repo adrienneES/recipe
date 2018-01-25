@@ -1,0 +1,23 @@
+{
+  "name": "recipe-app",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Adri Skrtic <adri.curtis@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/adrienneES/recipe",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "3.3.5",
+    "jquery": "~3.3.1",
+    "font-awesome": "~4.7.0"
+  }
+}
