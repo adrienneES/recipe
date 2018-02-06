@@ -74,13 +74,13 @@ app.listen(port, function(err) {
 
 /*
 var mailgun = require("mailgun-js");
-var api_key = 'key-e71659b4b5c2fa34b4b3877a21eb681f';
-var DOMAIN = 'sandbox8587ce2ec6f243bdb09b0552b1ba703d.mailgun.org';
+var api_key = 'secret - in notepad++';
+var DOMAIN = 'secret - in notepad++';
 var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
 var data = {
-  from: 'Excited User <postmaster@sandbox8587ce2ec6f243bdb09b0552b1ba703d.mailgun.org>',
-  to: 'adri.curtis@gmail.com',
+  from: 'Excited User <secret - in notepad++>',
+  to: 'secret - in notepad++',
   subject: 'Hello',
   text: 'Testing some Mailgun awesomness!'
 };

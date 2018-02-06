@@ -157,3 +157,19 @@ a,a:hover {
   padding:6px;
   color:#fff;
 }
+.linkButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.ingredientBlock {
+  border-color:blue;
+  display: inline-block;
+  width: 30%;
+}
+.ingredientBlock:hover {
+  background-color:lightgrey;
+}
+#newIngredientBlock {
+  border:blue 1px solid;
+}
