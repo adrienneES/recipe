@@ -94,8 +94,11 @@
                 </div>
                 <div class="well well-lg">
                   <h4>All Ingredients</h4>
-                  <% for (var i = 0; i< ingredients.length; i++) { %>
-                    <div class="well well-sm ingredientBlock"><h4 style="margin-right:10px;padding-right:10px;;"><%=ingredients[i].name %></h4><p class="small"><%=ingredients[i].category %></p></div>
+                    <% for (var i = 0; i< ingredients.length; i++) { %>
+                      <form name="deleteIngredient" action="/ingredients/deleteIngredient" method="post">
+                        <input class="form-control" style="margin-bottom:10px;" name="ingredientName2" id="ingredientName3" value="<%=ingredients[i].name %>" >
+                      <a onclick="deleteIngredient.submit()" name="<%=ingredients[i].name%>" value="a"><div class="well well-sm ingredientBlock"><h4 style="margin-right:10px;padding-right:10px;;" name="ingredientName" value="b"><%=ingredients[i].name %></h4><p class="small"><%=ingredients[i].category %></p></div></a>
+                    </form>
                     <% }%>
                 </div>
               </div>
@@ -116,18 +119,12 @@
                       <input type="submit" class="btn-lg btn-primary" value="Add">
                     </div>
                   </form>
-                  <div class="row">
-                    <div class="col-sm-12">
-                    </div>
-                  </div>
                 </div>
                 <div class="well well-lg">
                   <ul class="list-unstyled">
                     <form name="deleteCategory" action="/ingredients/deleteCategory" method="post">
                       <% for (var i = 0; i <categories.length; i++) { %>
-                        <li>
-                          <input type="submit" class="linkButton" name="categoryName" %>" value="
-                          <%=categories[i].name %>" >
+                        <li><input type="submit" class="linkButton" name="categoryName"  value="<%=categories[i].name %>" >
                         </li>
                         <% } %>
                     </form>

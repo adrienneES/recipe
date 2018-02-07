@@ -162,6 +162,9 @@ a,a:hover {
   border: none;
   cursor: pointer;
 }
+.linkButton:hover{
+  background-color:lightgrey;
+}
 .ingredientBlock {
   border-color:blue;
   display: inline-block;

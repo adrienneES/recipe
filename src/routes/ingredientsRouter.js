@@ -4,9 +4,10 @@ var mongodb = require('mongodb').MongoClient;
 
 var router = function (nav) {
   var mdb;
-  var url = 'mongodb://localhost:27017/libraryApp';
+  var url = 'mongodb://localhost:27017/tempDatabase';
   var categoryCollection;
   var ingredientCollection;
+  var ingredientController = require('../controllers/ingredientController')(nav);
   mongodb.connect(url, function(err, db) {
     if (!db) {
       console.log('no db');
@@ -18,64 +19,19 @@ var router = function (nav) {
     var ingredientList = {};
     var categoryList = {};
 
-  ingredientRouter.get('/', function (req, res) {
-    if (categoryCollection) {
-      categoryCollection.find({}).toArray(
-        function (err, results) {
-          categoryList = results;
-          if (ingredientCollection) {
-            ingredientCollection.find({}).toArray(
-              function(err, results2) {
-//                console.log(results2);
-                ingredientList = results2;
-              });
-            }
-          }
-      );
-      }
-      res.render('ingredients', {
-        title: 'ingredients',
-        categories: categoryList,
-        ingredients: ingredientList,
-        nav: nav});
-      });
+    ingredientRouter.get('/', ingredientController.getData);
 
-  ingredientRouter.route('/newCategory')
-  .post(function (req, res) {
-    var categoryName = {name: req.body.categoryName};
-    categoryCollection.insert(categoryName,
-      function(err, results) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.redirect('/ingredients');
-              }
-          });
-    });
+    ingredientRouter.route('/newCategory')
+      .post(ingredientController.newCategory);
+
     ingredientRouter.route('/newIngredient')
-    .post(function (req, res) {
-      var category = {category : req.body.ingredientCategory, name: req.body.ingredientName};
-      ingredientCollection.insert(category,
-      function (err, results) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.send(results);
-        }
-      })
-      });
-    ingredientRouter.route('/deleteCategory')
-  .post(function (req, res) {
-    var category = req.body.categoryName;
-    categoryCollection.remove({name: category},
-      function(err, results) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.redirect('/ingredients');
-        }
-       })
-    });
+      .post(ingredientController.newIngredient);
+
+      ingredientRouter.route('/deleteCategory')
+      .post(ingredientController.deleteCategory);
+
+      ingredientRouter.route('/deleteIngredient')
+      .post(ingredientController.deleteIngredient);
   });
   return ingredientRouter;
 }
