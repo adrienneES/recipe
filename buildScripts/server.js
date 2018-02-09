@@ -21,7 +21,7 @@ app.use(require('webpack-dev-middleware')(compiler, {
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-var url = 'mongodb://localhost:27017/tempDBForTesting';
+var url = 'mongodb://localhost:27017/tempDatabase';
 var mongodb = require('mongodb').MongoClient;
 mongodb.connect(url, function(err, db) {
   if (err) {
@@ -55,14 +55,12 @@ app.get('/shopping', function (req, res) {
   res.send('hi shopping');
 });
 
-app.get('/recipes', function (req, res) {
-  res.send('hi recipes');
-});
-
+var recipeRouter = require('../src/routes/recipeRouter')(nav);
 var ingredientRouter = require('../src/routes/ingredientsRouter')(nav);
 var authRouter = require('../src/routes/authRouter')(nav);
 app.use('/auth', authRouter);
 app.use('/ingredients', ingredientRouter);
+app.use('/recipes', recipeRouter);
 
 app.listen(port, function(err) {
   if(err) {

@@ -176,3 +176,16 @@ a,a:hover {
 #newIngredientBlock {
   border:blue 1px solid;
 }
+.left-padding {
+  padding-left: 20px;
+  float: right;
+}
+.center {
+  text-align: center;
+}
+.bottom-pad {
+  padding-bottom: 20px;
+}
+.mytable{
+  table-layout: auto;
+}

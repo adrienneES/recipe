@@ -1,8 +1,5 @@
 var mongodb = require('mongodb').MongoClient;
 var ingredientController = function (nav) {
-  var sayHi = function() {
-    console.log('hi');
-  };
   var categoryCollection;
   var ingredientCollection;
   var ingredientList = {};
