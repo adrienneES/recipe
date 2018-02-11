@@ -62,7 +62,9 @@
     <div class="row">
       <div class="col-md-12">
         <div class="well well-lg">
-          <input type="button" class="btn-lg btn-primary" value="New Recipe" onclick="window.location.href='/recipes/newRecipe'"> 10 Recipes
+          <input type="button" class="btn-lg btn-primary" value="New Recipe" onclick="window.location.href='/recipes/newRecipe'">
+          <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" value="show recipes" onclick="window.location.href='/recipes/showRecipes'">
+          <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" value="delete" onclick="window.location.href='/recipes/deleteRecipes %>'">
         </div>
       </div>
     </div>
@@ -72,7 +74,7 @@
           <div class="row">
             <div class="col-md-3">
               <div class="mydiv" style="width:100px;height:100px; background-color:lightgrey" display="inline-block">
-                <img src="http://127.0.0.1:8887/pan-seared-cod.jpg" height="50px"/>
+                <img src="<%=recipes[i].image%>" width="100px" height="100px"/>
               </div>
             </div>
             <div class="col-md-1">

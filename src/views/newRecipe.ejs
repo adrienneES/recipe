@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
   <title>
-    <%=title %>
+    <%=recipe.name %>
   </title>
   <meta name="generator" content="Bootply" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -14,8 +14,8 @@
   <!--[if lt IE 9]>
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
-    <link href="../css/styles.css" rel="stylesheet">
-    <link href="../../css/styles.css" rel="stylesheet">
+  <link href="../css/styles.css" rel="stylesheet">
+  <link href="../../css/styles.css" rel="stylesheet">
 </head>
 
 <body>
@@ -62,67 +62,98 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-        <div class="well well-lg">
-          <form name="newRecipeForm" action="/recipes/addRecipe" method="POST">
-            <div class="row">
-              <div class="col-sm-3">
-                  <label for="name">Image: <small>http://127.0.0.1:8887/</small></label>
-                  <br/>
-                  <input style="margin-bottom:10px;" name="image" id="image" placeholder="" value=""  >
-                  <input type="button" name="add" value="add" onclick="recipeImage.src=image.value;"/>
-                  <center><img width="100%" id="recipeImage" name="recipeImage"/></center>
-                </div>
-              <div class="col-sm-9">
-                  <label for="name">New Recipe Name</label>
-                  <input  style="margin-bottom:10px;" name="name" id="name" value="<%=recipe.name %>" >
-                  <label for="name">time to cook</label>
-                  <input  style="margin-bottom:10px;" name="timetoCook" id="timetoCook" value="<%=recipe.timetoCook %>"></br>
-                  <label for="description">description</label>
-                <br/>
-                <textarea rows="4" class="form-control" style="margin-bottom:10px;" name="description" id="description"><%=recipe.description %></textarea>
-              </div>
-            </div>
-            <div class="row" >
-              <div class="col center" style="border:1px solid black">
-                  <input type="submit" class=" btn-lg btn-primary" style="margin-top:20px;" value="Create Recipe">
-                  <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" value="delete" onclick="window.location.href='/recipes/deleteRecipes?name=<%=recipe.name %>'">
-                </div>
-            </div>
-          </form>
-        </div>
+        <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" value="delete" onclick="window.location.href='/recipes/deleteRecipes?name=<%=recipe.name %>'">
+        <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" value="show recipes" onclick="window.location.href='/recipes/showRecipes'">
+        <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" value="show recipes ingredients" onclick="window.location.href='/recipes/showRecipeIngredients'">
+        <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" value="delete recipes ingredients" onclick="window.location.href='/recipes/deleteRecipeIngredients'">
       </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
-          <div class="well well-lg">
-            <div class="center bottom-pad"><h3>Recipe Name</h3></div>
-            <div class="row">
-                <div class="col-md-6">
-                  <div class="well wel-lg">
-                  <div class="center "><h4>Ingredients</h4></div>
-                  <form name="addIngredient" action="/recipes/addIngredient" method="POST">
-                    <div class="row">
-                        <div class="col-md-9">
-                            <select name="ingredientCategory" class="form-control">
-                                <option>one</option>
-                                <option>two</option>
-                                <option>three</option>
-                              </select>
-                                </div>
-                        <div class="col-md-3 center">
-                            <input type="submit" class=" btn-lg btn-primary" value="Add">
-
-                        </div>
-                    </div>
-                    </form>
-                      <ul><li>one</li><li>one</li></ul></div></div>
-                <div class="col-md-6">
-                    <div class="well wel-lg"><div class="center"><h4>Directions</h4></div>
-                    <ul><li>one</li><li>one</li></ul></div></div>
+      <div class="col-md-12 well">
+        <form name="newRecipeForm" action="/recipes/addRecipe" method="POST">
+          <div class="row">
+            <div class="col-sm-3">
+              <label for="name">Image:
+                <small>http://127.0.0.1:8887/</small>
+              </label>
+              <br/>
+              <input style="margin-bottom:10px;" name="image" id="image" placeholder="" value="">
+              <input type="button" name="add" value="add" onclick="recipeImage.src=image.value;" />
+              <center>
+                <img width="100%" id="recipeImage" name="recipeImage" src="<%=recipe.image %>" />
+              </center>
+            </div>
+            <div class="col-sm-9">
+              <label for="name">New Recipe Name</label>
+              <input style="margin-bottom:10px;" name="name" id="name" value="<%=recipe.name %>">
+              <label for="name">time to cook</label>
+              <input style="margin-bottom:10px;" name="timetoCook" id="timetoCook" value="<%=recipe.timetoCook %>">
+              </br>
+              <label for="description">description</label>
+              <br/>
+              <textarea rows="4" class="form-control" style="margin-bottom:10px;" name="description" id="description"><%=recipe.description %></textarea>
+              <center>
+                <input type="submit" class="center btn-lg btn-primary" style="margin-top:20px;" value="Create Recipe">
+              </center>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col center">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 well">
+        <div class="center bottom-pad">
+          <h3>
+            <%=recipe.name%>
+          </h3>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="well wel-lg">
+              <div class="center ">
+                <h4>Ingredients</h4>
               </div>
+              <form name="addIngredient" action="/recipes/addIngredient?name=<%=recipe.name%>" method="POST">
+                <div class="row">
+                  <div class="col-md-9">
+                      <select name="selectedIngredient" class="form-control" >
+                          <% for (var i = 0; i <ingredients.length; i++) { %>
+                              <option value="<%=ingredients[i].name%>"><%=ingredients[i].name%></option>
+                            <% } %>
+                        </select>
+                  </div>
+                  <div class="col-md-3 center">
+                    <input type="submit" class=" btn-lg btn-primary" value="Add">
+                  </div>
+                </div>
+              </form>
+              recipe's ingredients
+              <ul>
+                  <% for (var i = 0; i <recipeIngredients.length; i++) { %>
+                      <li><%=recipeIngredients[i].ingredient%></li>
+                <li>one</li>
+                <% } %>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="well wel-lg">
+              <div class="center">
+                <h4>Directions</h4>
+              </div>
+              <ul>
+                <li>one</li>
+                <li>one</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
-      </div>
+    </div>
+  </div>
   </div>
   <!-- /cont -->

@@ -51,37 +51,15 @@
 <div class="container">
   <div class="row">
 
-    <div class="col-md-12">
-
-      <div class="panel">
-        <div class="panel-body">
-
-
-            <br>
-            <div class="col-md-2 col-sm-3 text-center">
-              Sign In
-              <form name="signInForm" action="/auth/signIn" method="post" >
-                User name: <input name="userName" id="userName"><br/>
-                password<input name="password" id="password"><br/>
-                <input type="submit" value = "sign In">
-              </form>
-            </div>
-            <div class="col-md-10 col-sm-9">
-              Sign Up
-              <form name="signUpForm" action="/auth/signUp" method="post" >
-                User name: <input name="userName" id="userName"><br/>
-                password<input name="password" id="password"><br/>
-                third param<input name="third" id="third"><br/>
-                <input type="submit" value = "sign Up">
-              </form>
-            </div>
-
-
-        </div>
+    <div class="col-md-12 well">
+      <h1 class="center">This weeks recipes</h1>
+      <div class="row">
+        <% for(var i = 0; i < 5; i++) { %>
+          <div class="col-md-3 well" >
+            <div onclick="alert('go to recipe');">recipe <%=i %></div>
+            <span onclick="alert('a');" style="border:1px solid black">add to shopping list?</span></div>
+          <% } %>
       </div>
-
-
-
    	</div><!--/col-12-->
   </div>
 </div>
