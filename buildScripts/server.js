@@ -29,12 +29,6 @@ mongodb.connect(url, function(err, db) {
   } else  if (!db) {
     console.log('no db');
   }else {
-/*     var collection = db.collection('temp');
-var user = {username: 'a', password: 'b'};
-collection.insert(user, function(err, results) {
-  console.log(results);
- });
-*/
   }});
 //app.use(express.static('src/js'));
 app.set('views', './src/views');
@@ -43,13 +37,11 @@ app.set('view engine', 'ejs');
 const nav = [
   {link: '/ingredients', text: 'ingredients'},
   {link: '/recipes', text: 'recipes'},
-  {link: '/shopping', text: 'shopping'}
+  {link: '/shopping', text: 'shopping'},
+  {link: '/data', text: 'data'}
 ]
-app.get('/', function(req,res) {
-  res.render('index', {
-    title: 'food planner',
-    nav: nav});
-});
+var mainController = require('../src/controllers/mainController')(nav);
+app.get('/', mainController.getData);
 
 app.get('/shopping', function (req, res) {
   res.send('hi shopping');
@@ -58,9 +50,11 @@ app.get('/shopping', function (req, res) {
 var recipeRouter = require('../src/routes/recipeRouter')(nav);
 var ingredientRouter = require('../src/routes/ingredientsRouter')(nav);
 var authRouter = require('../src/routes/authRouter')(nav);
+var dataRouter = require('../src/routes/dataRouter')(nav);
 app.use('/auth', authRouter);
 app.use('/ingredients', ingredientRouter);
 app.use('/recipes', recipeRouter);
+app.use('/data', dataRouter);
 
 app.listen(port, function(err) {
   if(err) {

@@ -17,9 +17,16 @@ var ingredientController = function (nav) {
               if (ingredientCollection) {
                 ingredientCollection.find({}).toArray(
                   function (err, results) {
+                    var message = {};
                     ingredientList = results;
+                    if (req.query.error) {
+                      message = {type:'error', message: req.query.error}
+                    } else if (req.query.success) {
+                      message = {type:'success', message: 'Ingredient added successfully'}
+                    }
                     res.render('ingredients', {
                       title: 'ingredients',
+                      message: message,
                       categories: categoryList,
                       ingredients: ingredientList,
                       nav: nav});
@@ -44,15 +51,26 @@ var ingredientController = function (nav) {
         });
     }
     var newIngredient = function (req, res) {
-      var category = {category : req.body.ingredientCategory, name: req.body.ingredientName};
-      ingredientCollection.insert(category,
-        function (err, results) {
-          if (err) {
-            console.log(err);
-          } else {
-            res.redirect('/ingredients');
-          }
-        })
+      var staple = req.body.staple ? 'yes' : 'no';
+      var category = {
+        category : req.body.ingredientCategory, 
+        name: req.body.ingredientName,
+        staple: staple
+      };
+      ingredientCollection.findOne({name:req.body.ingredientName}, function (err, results) {
+        if (results) {
+          res.redirect('/ingredients?error=ingredient%20exists%20already');
+        }else {
+          ingredientCollection.insert(category,
+            function (err, results) {
+              if (err) {
+                console.log(err);
+              } else {
+                res.redirect('/ingredients?success=added');
+              }
+            })
+            }
+      });
     };
     var deleteCategory = function (req, res) {
       var category = req.body.categoryName;
@@ -68,18 +86,16 @@ var ingredientController = function (nav) {
       }
 
     var deleteIngredient = function (req, res) {
-      var ingredientName = req.body.ingredientName;
+      var ingredientName = req.body.ingredientName || req.query.ingredientName;
       console.log('ingredientName:' + ingredientName);
-      res.send('deleted');
-/*       categoryCollection.remove({name: category},
-        function(err, results) {
-          if (err) {
-            console.log(err);
-          } else {
-            res.redirect('/ingredients');
-          }
-         })
- */      }
+      ingredientCollection.remove({name:ingredientName}, function(err, results) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.redirect('/ingredients');
+        }
+      });
+    }
 
     return {
       deleteCategory : deleteCategory,

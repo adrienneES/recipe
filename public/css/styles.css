@@ -189,3 +189,12 @@ a,a:hover {
 .mytable{
   table-layout: auto;
 }
+.blue {
+  color:blue;
+}
+.big {
+  font-size:1.5em;
+}
+.right{
+  text-align:right;
+}

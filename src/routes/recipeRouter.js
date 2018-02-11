@@ -7,20 +7,17 @@ var router = function (nav) {
   var  recipeController = require ('../controllers/recipeController')(nav);
   recipeRouter
     .get('/', recipeController.getRecipes);
-  recipeRouter.route('/newRecipe/:id')
+  recipeRouter.route('/recipeDetail/:id')
     .get(recipeController.getRecipe);
 
   recipeRouter
+    .get('/recipeDetail', recipeController.recipeDetail);
+    recipeRouter
     .get('/deleteRecipes', recipeController.deleteRecipes);
-  recipeRouter
-    .get('/newRecipe', recipeController.newRecipe);
   recipeRouter.route('/addRecipe')
     .post(recipeController.addRecipe);
   recipeRouter.route('/addIngredient')
     .post(recipeController.addIngredient);
-    recipeRouter.get('/showRecipes', recipeController.showRecipes)
-    recipeRouter.get('/showRecipeIngredients', recipeController.showRecipeIngredients)
-    recipeRouter.get('/deleteRecipeIngredients', recipeController.deleteRecipeIngredients)
 
   return recipeRouter;
 }

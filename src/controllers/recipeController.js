@@ -24,7 +24,8 @@ var recipeController = function (nav) {
 
   var addRecipe = function (req, res) {
     console.log(`adding a recipe ${req.body.name}`);
-    console.log('req.body.image');
+    var currentWeek = req.body.addedToWeek || 0;
+    console.log(`add to week ${currentWeek}`);
     var recipe = {name : req.body.name,
       time : req.body.timetoCook,
       description: req.body.description,
@@ -34,42 +35,51 @@ var recipeController = function (nav) {
         var collection = db.collection('recipes');
         if (collection) {
           collection.insert(recipe, function (err, results) {
-            newRecipe(req, res);
-            /*
-            var ingredients = [{name:'a'},{name:'aaa'},{name:'aa'}];
-            res.render('newRecipe', {
-              title: 'Recipes',
-              recipe: recipe,
-              recipeIngredients: [],
-              ingredients: ingredients,
-              nav: nav});
-              */
+            // is this week recipe?
+            if (currentWeek) {
+              var collection = db.collection('week');
+              var weekItem = {recipeName: req.body.name};
+              collection.insert(weekItem, function(err, results) {
+                recipeDetail(req, res);
+              })
+            } else {
+              recipeDetail(req, res);
+            }
             });
           }
        });
   }
 
   var addIngredient = function(req, res) {
-    console.log(`adding ingredient for recipe: ${req.query.name}`);
+    console.log(`adding ingredient ${req.body.selectedIngredient} for recipe: ${req.query.name}`);
     var recipeName = req.query.name;
     var ingredient = {recipe: recipeName, ingredient: req.body.selectedIngredient};
+    console.log(ingredient);
     mongodb.connect(url, function(err, db) {
       if (recipeName) {
-        // insert recipe
         var collection = db.collection('recipeIngredients');
-        collection.insert(ingredient, function (err, results) {
-          console.log('inserting ingredient');
-          getRecipe(req, res);
-        });
-        } else {
-        // go back to new recipe screen
+        // does this ingredient already exist?
+        collection.findOne({
+          recipe:recipeName, ingredient:req.body.selectedIngredient
+        }, 
+        function (err, data) {
+          if (data) {
+            res.redirect('/recipes/recipeDetail/'+ recipeName + '?error=ingredient%20exists%20already');
+          }
+          else {
+            collection.insert(ingredient, function (err, results) {
+              res.redirect('/recipes/recipeDetail/'+ recipeName + '?success=success');
+            });
+          }
+        })
+      } else {
+  // go back to new recipe screen
         console.log('going back to new recipe');
-        newRecipe(req, res);
+        getRecipe(req, res);
       }
     });
 }
-  var newRecipe = function (req, res) {
-    console.log('new recipe');
+  var recipeDetail = function (req, res) {
     var recipe = {};
       mongodb.connect(url, function(err, db) {
         var ingredientCollection = db.collection('ingredients');
@@ -79,7 +89,8 @@ var recipeController = function (nav) {
             if (results) {
               ingredients = results;
             }
-            res.render('newRecipe', {
+            var recipeIngredients = {};
+            res.render('recipeDetail', {
               title: 'Recipes',
               ingredients:ingredients,
               recipeIngredients: [],
@@ -91,6 +102,7 @@ var recipeController = function (nav) {
   };
   var getRecipe = function (req, res) {
     var id = req.params.id || req.query.name;
+    var message = {};
     console.log(`getRecipe name: ${id}`);
     mongodb.connect(url, function (err, db) {
       var collection = db.collection('recipes');
@@ -114,15 +126,22 @@ var recipeController = function (nav) {
                     recipeCollection.findOne({name: id}, function (err, recipe) {
                       // now get the ingredients for this recipe
                       var collection = db.collection('recipeIngredients');
-                      collection.find({recipeName: id}).toArray( function (err, recipeIngredients ) {
-                        res.render('newRecipe', {
+                      collection.find({recipe: id}).toArray( function (err, recipeIngredients ) {
+                        console.log('getting ingredients for recipe' + recipeIngredients.length);
+                        if (req.query.error) {
+                          message = {type:'error', message: req.query.error}
+                        } else if (req.query.success) {
+                          message = {type:'success', message: 'Ingredient added successfully'}
+                        }
+                        res.render('recipeDetail', {
                           title: 'Recipes',
+                          message: message,
                           recipe: recipe,
                           ingredients: ingredients,
                           recipeIngredients: recipeIngredients,
-                          nav: nav});
-
-                      })
+                          nav: nav
+                        });
+                       })
                       });
                     }
                   });
@@ -135,16 +154,16 @@ var recipeController = function (nav) {
   }
   var deleteRecipes = function (req, res) {
     var recipeName = req.query.name;
-    console.log(`deleting recipe: ${deleteOne}`)
+    console.log(`deleting recipe: ${recipeName}`)
     mongodb.connect(url, function (err, db) {
       var collection = db.collection('recipes');
       if (recipeName) {
         collection.remove({name: recipeName}, function (err, results) {
-          newRecipe(req, res);
+          recipeDetail(req, res);
          });
       } else {
         collection.remove( {}, function (err, results) {
-          newRecipe(req, res);
+          recipeDetail(req, res);
          });
       }
     });
@@ -157,32 +176,14 @@ var recipeController = function (nav) {
       } );
       });
   }
-  var showRecipeIngredients = function (req, res) {
-    mongodb.connect(url, function (err, db) {
-      var collection = db.collection('recipeIngredients');
-      collection.find({}).toArray(function (err, results) {
-        res.send(results);
-      } );
-      });
-  }
-  var deleteRecipeIngredients = function(req, res) {
-    mongodb.connect(url, function (err, db) {
-      var collection = db.collection('recipeIngredients');
-      collection.remove({}, function(err, results) {
-        newRecipe(req, res);
-      } );
-      });
-  }
   return {
     getRecipes : getRecipes,
     addRecipe : addRecipe,
-    newRecipe: newRecipe,
+    recipeDetail: recipeDetail,
     getRecipe: getRecipe,
     deleteRecipes:deleteRecipes,
     showRecipes : showRecipes,
-    addIngredient : addIngredient,
-    showRecipeIngredients:showRecipeIngredients,
-    deleteRecipeIngredients:deleteRecipeIngredients
+    addIngredient : addIngredient
   };
 };
 module.exports = recipeController;

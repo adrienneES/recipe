@@ -54,9 +54,10 @@
     <div class="col-md-12 well">
       <h1 class="center">This weeks recipes</h1>
       <div class="row">
-        <% for(var i = 0; i < 5; i++) { %>
+        <% for(var i = 0; i < week.length; i++) { %>
           <div class="col-md-3 well" >
-            <div onclick="alert('go to recipe');">recipe <%=i %></div>
+          <div class="row" onclick="window.location.href='/recipes/recipeDetail/<%=week[i].recipeName %>'">
+              recipename: <%=week[i].recipeName %></div>
             <span onclick="alert('a');" style="border:1px solid black">add to shopping list?</span></div>
           <% } %>
       </div>

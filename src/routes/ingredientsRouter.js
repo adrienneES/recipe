@@ -1,8 +1,8 @@
 var express = require('express');
-var ingredientRouter = express.Router();
-var mongodb = require('mongodb').MongoClient;
+  var ingredientRouter = express.Router();
+  var mongodb = require('mongodb').MongoClient;
 
-var router = function (nav) {
+  var router = function (nav) {
   var mdb;
   var url = 'mongodb://localhost:27017/tempDatabase';
   var categoryCollection;
@@ -31,7 +31,7 @@ var router = function (nav) {
       .post(ingredientController.deleteCategory);
 
       ingredientRouter.route('/deleteIngredient')
-      .post(ingredientController.deleteIngredient);
+      .get(ingredientController.deleteIngredient);
   });
   return ingredientRouter;
 }
