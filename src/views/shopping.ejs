@@ -12,7 +12,8 @@
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 		<link href="css/styles.css" rel="stylesheet">
-	</head>
+    <link href="../css/styles.css" rel="stylesheet">
+    </head>
 	<body>
 <header class="navbar navbar-bright navbar-fixed-top" role="banner">
   <div class="container">
@@ -27,8 +28,8 @@
     </div>
     <nav class="collapse navbar-collapse" role="navigation">
       <ul class="nav navbar-nav">
-        <% for (var i = 0; i <nav.length; i++) { %>
-          <li><a href= '<%= nav[i].link %>' > <%=nav[i].text %> </a> </li>
+        <% for (let navItem of nav) { %>
+          <li><a href= '<%= navItem.link %>' > <%=navItem.text %> </a> </li>
       <% } %>
   </ul>
       <ul class="nav navbar-right navbar-nav">
@@ -50,23 +51,30 @@
 
 <div class="container">
   <div class="row">
-
-    <div class="col-md-12 well">
-      <h1 class="center">This weeks recipes</h1>
-      <div class="row">
-      </div>
-   	</div><!--/col-12-->
+  <div class="col-md-9 well">
+    <% if (message.type ==  'error') {  %>
+      <div class="alert alert-danger">
+        <%=message.message%>
+      </div>      
+    <% } else if (message.type== 'success') { %>
+      <div class="alert alert-success">
+        <%=message.message%>
+      </div>      
+    <% } %>
+    <form name="deleteItem" action="/shopping/delete" method="POST">
+      <%for (let item of shoppingList ){ %>
+        <input class="linkButton" type="submit" name='ingredientsSelect' value='<%=item.ingredient%>'/></br>
+      <% }%>
+    </form>
   </div>
+  <div class="col-md-3 well">
+  <form name="insertShopping" action="/shopping/add" method="POST">
+    <%for (let ingredient of ingredients) { %>
+        <input class="linkButton" type="submit" name='ingredientsSelect' value='<%=ingredient.name%>'/></br>
+    <% } %>
+  <input type="submit" value="add">
+</form>
 </div>
-
-
-<hr>
-
-<div class="container" id="footer">
-  <div class="row">
-    <div class="col col-sm-12">
-
-    </div>
   </div>
 </div>
 
@@ -75,42 +83,17 @@
 <hr>
 
 <footer>
-  <div class="container">
+<div class="container">
   <div class="row">
-  <% for (var i = 0; i < recipes.length; i++) { %>
-    <div class="well col-md-3" style="border:1px black solid">
-      <div class="row" onclick="window.location.href='/recipes/recipeDetail/<%=recipes[i].name %>'">
-        <div class="col-md-5">
-          <div class="mydiv" style="width:100px;height:100px; background-color:lightgrey" display="inline-block">
-            <img src="<%=recipes[i].image%>" width="100px" height="100px"/>
-          </div>
-        </div>
-        <div class="col-md-7">
-          <h4 class="left-padding">
-            <%=recipes[i].name %>
-          </h4>
-          <small class="left-padding">
-            <%=recipes[i].description %>
-          </small>
-          <br/>
-          <small class="left-padding">
-            <%=recipes[i].timetoCook %>
-          </small>
-        </div>
-      </div>
-      <div class="row" onclick="window.location.href='/shopping/addToList?name=<%=recipes[i].name %>'" style="border:1px red solid;">
-        <div class="col">
-        <span class="linkButton" style="float:right">click to add ingredients<span/>
-        </div>
-      </div>
+    <div class="col-sm-6">
     </div>
-    <% } %>
-</div>
+  </div>
 </div>
 </footer>
-	<!-- script references -->
-  <script src="/lib/jquery/dist/jquery.js"></script>
-  <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
-  <script src="bundle.js"></script>
+<!-- script references -->
+<script src="/lib/jquery/dist/jquery.js"></script>
+<script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+<script src="bundle.js"></script>
 </body>
+
 </html>

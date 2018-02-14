@@ -1,23 +1,9 @@
-var express = require('express');
-  var ingredientRouter = express.Router();
-  var mongodb = require('mongodb').MongoClient;
+import express from 'express';
+let ingredientRouter = express.Router();
 
-  var router = function (nav) {
-  var mdb;
-  var url = 'mongodb://localhost:27017/tempDatabase';
-  var categoryCollection;
-  var ingredientCollection;
-  var ingredientController = require('../controllers/ingredientController')(nav);
-  mongodb.connect(url, function(err, db) {
-    if (!db) {
-      console.log('no db');
-    }
-    else {
-      categoryCollection = db.collection('categories');
-      ingredientCollection = db.collection('ingredients');
-    }
-    var ingredientList = {};
-    var categoryList = {};
+const router = function (nav) {
+  const ingredientController = require('../controllers/ingredientController')(nav);
+
 
     ingredientRouter.get('/', ingredientController.getData);
 
@@ -32,7 +18,6 @@ var express = require('express');
 
       ingredientRouter.route('/deleteIngredient')
       .get(ingredientController.deleteIngredient);
-  });
   return ingredientRouter;
 }
 

@@ -198,3 +198,6 @@ a,a:hover {
 .right{
   text-align:right;
 }
+.none{
+  list-style:none;
+}

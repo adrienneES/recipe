@@ -1,8 +1,8 @@
 import express from 'express';
-var dataRouter = express.Router();
+let dataRouter = express.Router();
 
-var router = function (nav) {
-    var dataController = require('../controllers/dataController')(nav);
+const router = function (nav) {
+    const dataController = require('../controllers/dataController')(nav);
     dataRouter.get('/', dataController.getData);
     dataRouter.get('/showRecipes', dataController.showRecipes);
     dataRouter.get('/deleteRecipes', dataController.deleteRecipes);
@@ -10,8 +10,10 @@ var router = function (nav) {
     dataRouter.get('/deleteRecipeIngredients', dataController.deleteRecipeIngredients);
     dataRouter.get('/showIngredients', dataController.showIngredients);
     dataRouter.get('/deleteIngredients', dataController.deleteIngredients);
-    dataRouter.get('/showWeek', dataController.showWeek);
-    dataRouter.get('/deleteWeek', dataController.deleteWeek);
+    dataRouter.get('/showShopping', dataController.showShoppingList);
+    dataRouter.get('/deleteShopping', dataController.deleteShoppingList);
+    dataRouter.get('/showDirections', dataController.showDirections);
+    dataRouter.get('/deleteDirections', dataController.deleteDirections);
     return dataRouter;
 }
 module.exports = router;

@@ -1,17 +1,14 @@
-import mongo from 'mongodb';
-var mongodb = mongo.MongoClient;
-var mainController = function (nav) {
-    var getData = function (req, res) {
-        var url = 'mongodb://localhost:27017/tempDatabase';
-        mongodb.connect(url, function (err, db) { 
-            var collection = db.collection('week');
-            collection.find({}).toArray(function (err, results) {
-                res.render('index', {
-                    title: 'food planner',
-                    week: results,
-                    nav: nav});
-                 });
+const recipeDAC = require('../data/recipeDAC')();
+const mainController = function (nav) {
+    const getData = function (req, res) {
+
+        recipeDAC.getRecipesForWeek((results) => {
+            res.render('index', {
+                title: 'food planner',
+                recipes:results,
+                nav: nav
             });
+        })
     }
     return {
         getData : getData

@@ -3,7 +3,7 @@ import path  from 'path';
 import open  from 'open';
 import webpack from 'webpack';
 import config from '../webpack.config.dev';
-var bodyParser = require('body-parser');
+import bodyParser from 'body-parser';
 // import
 //var pinterestAPI = require('pinterest-api');
 
@@ -21,16 +21,7 @@ app.use(require('webpack-dev-middleware')(compiler, {
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-var url = 'mongodb://localhost:27017/tempDatabase';
-var mongodb = require('mongodb').MongoClient;
-mongodb.connect(url, function(err, db) {
-  if (err) {
-    console.log(err);
-  } else  if (!db) {
-    console.log('no db');
-  }else {
-  }});
-//app.use(express.static('src/js'));
+ //app.use(express.static('src/js'));
 app.set('views', './src/views');
 app.set('view engine', 'ejs');
 
@@ -40,21 +31,24 @@ const nav = [
   {link: '/shopping', text: 'shopping'},
   {link: '/data', text: 'data'}
 ]
-var mainController = require('../src/controllers/mainController')(nav);
+/* var middleware = function (req, res, next) {
+  console.log('middleware!');
+  next();
+};
+app.use(middleware);
+ */var mainController = require('../src/controllers/mainController')(nav);
 app.get('/', mainController.getData);
 
-app.get('/shopping', function (req, res) {
-  res.send('hi shopping');
-});
-
-var recipeRouter = require('../src/routes/recipeRouter')(nav);
-var ingredientRouter = require('../src/routes/ingredientsRouter')(nav);
-var authRouter = require('../src/routes/authRouter')(nav);
-var dataRouter = require('../src/routes/dataRouter')(nav);
+const shoppingRouter = require('../src/routes/shoppingRouter')(nav);
+const recipeRouter = require('../src/routes/recipeRouter')(nav);
+const ingredientRouter = require('../src/routes/ingredientsRouter')(nav);
+const authRouter = require('../src/routes/authRouter')(nav);
+const dataRouter = require('../src/routes/dataRouter')(nav);
 app.use('/auth', authRouter);
 app.use('/ingredients', ingredientRouter);
 app.use('/recipes', recipeRouter);
 app.use('/data', dataRouter);
+app.use('/shopping', shoppingRouter);
 
 app.listen(port, function(err) {
   if(err) {

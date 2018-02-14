@@ -62,15 +62,19 @@
     <div class="col-md-9 well">
       <div class="well">
       <% if (message.type ==  'error') {  %>
-      <div class="alert alert-danger">
-      <%=message.message%>
-    </div>      
+        <div class="alert alert-danger">
+          <%=message.message%>
+        </div>      
       <% } else if (message.type== 'success') { %>
-      <div class="alert alert-success">
-      <%=message.message%>
-    </div>      
+        <div class="alert alert-success">
+          <%=message.message%>
+        </div>      
+      <% } else if (message.type == 'info') { %>
+        <div class="alert alert-info">
+          <%=message.message%>
+        </div>      
       <% } %>
-                <h4 class="center">New Ingredient</h4>
+      <h4 class="center">New Ingredient</h4>
       <form name="recipeDetail" action="/ingredients/newIngredient" method="post">
         <div class="row" >
           <div class="col-md-1">Category</div>

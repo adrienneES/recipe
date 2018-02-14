@@ -89,7 +89,7 @@
             </div>
           </div>
           <div class="row"><div class="col right">
-          added to week: <% if (recipes[i].currentWeek) { %>
+          <% if (recipes[i].addedToWeek) { %>
             <input name="addedToWeek" type="checkbox" checked>
           <% } else { %>
           <input name="addedToWeek" type="checkbox" >

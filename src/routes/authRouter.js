@@ -1,7 +1,7 @@
-var express = require('express');
-var authRouter = express.Router();
+import express from 'express';
+let authRouter = express.Router();
 
-var router = function () {
+const router = function () {
   authRouter.route('/signup')
     .post(function (req, res) {
       console.log(req.body);

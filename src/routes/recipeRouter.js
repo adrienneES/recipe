@@ -1,10 +1,8 @@
 import express from 'express';
-var recipeRouter = express.Router();
-var mongodb = require('mongodb').MongoClient;
-var objectId = require('mongodb').ObjectID;
+let recipeRouter = express.Router();
 
-var router = function (nav) {
-  var  recipeController = require ('../controllers/recipeController')(nav);
+const router = function (nav) {
+  const  recipeController = require ('../controllers/recipeController')(nav);
   recipeRouter
     .get('/', recipeController.getRecipes);
   recipeRouter.route('/recipeDetail/:id')
@@ -14,10 +12,14 @@ var router = function (nav) {
     .get('/recipeDetail', recipeController.recipeDetail);
     recipeRouter
     .get('/deleteRecipes', recipeController.deleteRecipes);
+    recipeRouter
+    .get('/deleteDirection', recipeController.deleteDirection);
   recipeRouter.route('/addRecipe')
     .post(recipeController.addRecipe);
-  recipeRouter.route('/addIngredient')
+    recipeRouter.route('/addIngredient')
     .post(recipeController.addIngredient);
+    recipeRouter.route('/addDirection')
+    .post(recipeController.addDirection);
 
   return recipeRouter;
 }

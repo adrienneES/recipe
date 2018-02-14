@@ -1,116 +1,97 @@
-import mongo from 'mongodb';
-var mongodb = mongo.MongoClient;
-var dataController = function (nav) {
-    var url = 'mongodb://localhost:27017/tempDatabase';
-    var getData = function(req, res) {
-        res.render('data', {
-            title: 'data',
-            recipes: [],
-            week: [],
-            recipesIngredients: [],
-            ingredients:[],
-            collection: '',
-            nav: nav});
+const recipeDAC = require('../data/recipeDAC')();
+const shoppingDAC = require('../data/shoppingDAC')();
+const ingredientDAC = require('../data/ingredientDAC')();
+
+const render = function (res, data) {
+  res.render('data', {
+    title: 'data',
+    recipes: data.recipes,
+    recipesIngredients: data.recipeIngredients,
+    ingredients: data.ingredients,
+    shoppingList: data.shoppingList,
+    collection: data.collection,
+    directions : data.directions,
+    nav: data.nav});
+
+}
+const dataController = function (nav) {
+  const ingredientController = require('../controllers/ingredientController')(nav);
+  const recipeController = require('../controllers/recipeController')(nav);
+  let data = {recipes: [], recipeIngredients:[],ingredients:[], shoppingList:[], collection:'none', directions: [], nav:nav}
+  const getData = function(req, res) {
+    render(res, data);
   }
-  var showRecipes = function(req, res) {
-    mongodb.connect(url, function (err, db) {
-      var collection = db.collection('recipes');
-      collection.find({}).toArray(function (err, results) {
-        res.render('data', {
-          title: 'data',
-          recipes: results,
-          recipesIngredients: [],
-          week: [],
-          ingredients:[],
-          collection: 'Recipes',
-          nav: nav
-        });
-      } );
-    });
+  const clearData = function () {
+    data = {recipes: [], recipeIngredients:[],ingredients:[], shoppingList:[], collection:'none', directions: [], nav:nav}  
   }
-  var deleteRecipes = function (req, res) {
+  const showRecipes = function(req, res) {
+    recipeDAC.getRecipeData(function (results) {
+      console.log(results);
+      clearData();
+      data.recipes = results;
+      data.collection = 'Recipes';
+      render(res, data);
+    })
+  }
+  const deleteRecipes = function (req, res) {
     console.log(`deleting recipes`)
-    mongodb.connect(url, function (err, db) {
-      var collection = db.collection('recipes');
-        collection.remove( {}, function (err, results) {
-          getData(req, res);
-        });
-      });
-  }
-  var showRecipeIngredients = function (req, res) {
-    mongodb.connect(url, function (err, db) {
-      var collection = db.collection('recipeIngredients');
-      collection.find({}).toArray(function (err, results) {
-        res.render('data', {
-          title: 'data',
-          recipes: [],
-          recipesIngredients: results,
-          collection: 'Recipe Ingredients',
-          week: [],
-          ingredients:[],
-          nav: nav
-        });
-      } );
+    recipeDAC.deleteAllRecipes(function (results) { 
+      getData(req, res);
     });
   }
-  var deleteRecipeIngredients = function(req, res) {
-    mongodb.connect(url, function (err, db) {
-      var collection = db.collection('recipeIngredients');
-      collection.remove({}, function(err, results) {
-        getData(req, res);
-      } );
-      });
+  const showRecipeIngredients = function (req, res) {
+    recipeDAC.getAllRecipeIngredients(function(results) {
+      clearData();
+      data.collection = 'Recipe Ingredeients';
+      data.recipeIngredients = results;
+//      const data = {recipes: [], recipeIngredients:results,ingredients:[], shoppingList:[], collection:'Recipe Ingredeients', nav:nav}
+      render(res, data);
+    })
   }
-  var showIngredients = function(req, res) {
-    mongodb.connect(url, function (err, db) {
-      var collection = db.collection('ingredients');
-      collection.find({}).toArray(function (err, results) {
-        res.render('data', {
-          title: 'data',
-          recipes: [],
-          recipesIngredients: [],
-          ingredients: results,
-          week: [],
-          collection: 'Ingredients',
-          nav: nav
-        });
-      } );
+  const deleteRecipeIngredients = function(req, res) {
+    ingredientDAC.deleteRecipeIngredients((results)=> {
+      getData(req, res);
+    })
+  }
+  const showIngredients = function(req, res) {
+    ingredientDAC.getIngredients((results) =>{
+      clearData();
+      data.ingredients = results
+      data.collection = 'Ingredients';
+      render(res, data);
     });
-      
   }
-  var deleteIngredients = function(req, res) {
-    mongodb.connect(url, function (err, db) {
-      var collection = db.collection('ingredients');
-      collection.remove({}, function(err, results) {
-        getData(req, res);
-      } );
-      });
-  }
-  var showWeek = function(req, res) {
-    mongodb.connect(url, function (err, db) {
-      var collection = db.collection('week');
-      collection.find({}).toArray(function (err, results) {
-        console.log(results);
-        res.render('data', {
-          title: 'data',
-          recipes: [],
-          recipesIngredients: [],
-          ingredients: results,
-          week: results,
-          collection: 'Week',
-          nav: nav
-        });
-      } );
+  const deleteIngredients = function(req, res) {
+    ingredientDAC.deleteIngredients((results) =>{
+      getData(req, res);
     });
-      
   }
-  var deleteWeek = function(req, res) {
-    mongodb.connect(url, function (err, db) {
-      var collection = db.collection('week');
-      collection.remove({}, function(err, results) {
-        getData(req, res);
-      } );
-      });
+  const showShoppingList = function (req, res) {
+    shoppingDAC.getShoppingList((results) => {
+      clearData();
+      data.shoppingList = results;
+      data.collection = 'ShoppingList';
+      render(res, data);
+  });
+  }
+  const deleteShoppingList = function (req, res) {
+    shoppingDAC.deleteShoppingList((results) => {
+      getData(req, res);
+    })
+  }
+  const showDirections = function(req, res) {
+    console.log('showing directions');
+    recipeDAC.getAllDirections(results => {
+      clearData();
+      data.directions = results; 
+      data.collection = 'directions';
+      render(res, data);
+    });
+  }
+  const deleteDirections = function (req, res) {
+    recipeDAC.deleteDirections(results=> {
+      getData(req, res);
+    })    
   }
   return {
         getData:getData,
@@ -119,9 +100,12 @@ var dataController = function (nav) {
         deleteRecipeIngredients:deleteRecipeIngredients,
         deleteRecipes:deleteRecipes,
         showIngredients: showIngredients,
+        deleteRecipes:deleteRecipes,
         deleteIngredients:deleteIngredients,
-        showWeek: showWeek,
-        deleteWeek:deleteWeek
+        showShoppingList: showShoppingList,
+        deleteShoppingList:deleteShoppingList,
+        showDirections: showDirections,
+        deleteDirections:deleteDirections
     }
   };
 

@@ -53,29 +53,33 @@
   <div class="row center">
     <div class="col-md-3 well">
           <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
-          value="show recipes" onclick="window.location.href='/data/showRecipes'">
-      <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
-          value="delete recipes" onclick="window.location.href='/data/deleteRecipes %>'">
+            value="show recipes" onclick="window.location.href='/data/showRecipes'">
+          <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
+            value="delete recipes" onclick="window.location.href='/data/deleteRecipes %>'">
     </div>
     <div class="col-md-3 well">
         <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
-          value="show recipe Ingredients" onclick="window.location.href='/data/showRecipeIngredients'">
-      <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
+            value="show recipe Ingredients" onclick="window.location.href='/data/showRecipeIngredients'">
+        <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
           value="delete recipe Ingredients" onclick="window.location.href='/data/deleteRecipeIngredients %>'">
     </div>
-      <div class="col-md-3 well">
+    <div class="col-md-3 well">
           <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
-          value="show Ingredients" onclick="window.location.href='/data/showIngredients'">
-      <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
-          value="delete Ingredients" onclick="window.location.href='/data/deleteIngredients %>'">
-      </div>
-      <div class="col-md-3 well">
+            value="show Ingredients" onclick="window.location.href='/data/showIngredients'">
           <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
-          value="show week" onclick="window.location.href='/data/showWeek'">
-      <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
-          value="delete week" onclick="window.location.href='/data/deleteWeek %>'">
-      </span>
-
+            value="delete Ingredients" onclick="window.location.href='/data/deleteIngredients %>'">
+    </div>
+    <div class="col-md-3 well">
+          <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
+            value="show Shopping" onclick="window.location.href='/data/showShopping'">
+          <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
+            value="delete Shopping" onclick="window.location.href='/data/deleteShopping %>'">
+    </div>
+    <div class="col-md-3 well">
+          <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
+            value="show directions" onclick="window.location.href='/data/showDirections'">
+          <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
+            value="delete directiosn" onclick="window.location.href='/data/deleteDirections %>'">
     </div>
   </div>
 </div>
@@ -88,30 +92,34 @@
     <div class="col col-sm-12">
     <div class="center"><%=collection%></div>
     <div class="row">
-      <% for (var i = 0; i < recipes.length; i++){ %>
-          <div class="col-sm-3">
-              <span class="blue big"><%=recipes[i].name%></span>
-              <span><%=recipes[i].description%></span>
+      <% for (let recipe of recipes){ %>
+          <div class="col-sm-3 well">a
+              <span class="blue big"><%=recipe.name%></span>
+              <span><%=recipe.description%></span>
           </div>
       <% }%>
-      <% for (var i = 0; i < ingredients.length; i++){ %>
-        <div class="col-sm-3">
-          <span class="blue big"><%=ingredients[i].name%></span>
+      <% for (let ingredient of ingredients){ %>
+        <div class="col-sm-3 well">b
+          <span class="blue big"><%=ingredient.name%></span>
           <span><%=ingredients[i].category%></span>
           <span><%=ingredients[i].staple%></span>
         </div>
       <% }%> 
-      <% for (var i = 0; i < recipesIngredients.length; i++){ %>
-      <div class="col-sm-6">
-      <span class="blue big"><%=recipesIngredients[i].recipe%></span>
-    </div>
-    <div class="col-sm-6">
-    <span class="blue big"><%=recipesIngredients[i].ingredient%></span>
-  </div>
-<% }%>
-      <% for (var i = 0; i < week.length; i++){ %>
-        <div class="col">
-          <span class="blue big"><%=week[i].recipeName%></span>
+      <% for (let recipesIngredient of recipesIngredients){ %>
+        <div class="col-sm-12 well">c
+          <span class="blue big"><%=recipesIngredient.recipe%></span>
+            <span class="blue big"><%=recipesIngredient.ingredient%></span>
+        </div>
+      <% }%>
+      <% for (let item of shoppingList){ %>
+        <div class="col-sm-12">d
+          <%=item.ingredient%>
+        </div>
+      <% }%>
+      <% for (let direction of directions){ %>
+        <div class="col-sm-6 well">e
+        <span class="blue big"><%=direction.stepNumber%></span>
+        <span ><%=direction.direction%></span>
         </div>
       <% }%>
     </div>
