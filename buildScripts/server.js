@@ -29,6 +29,7 @@ const nav = [
   {link: '/ingredients', text: 'ingredients'},
   {link: '/recipes', text: 'recipes'},
   {link: '/shopping', text: 'shopping'},
+  {link: '/types', text: 'types'},
   {link: '/data', text: 'data'}
 ]
 /* var middleware = function (req, res, next) {
@@ -36,7 +37,8 @@ const nav = [
   next();
 };
 app.use(middleware);
- */var mainController = require('../src/controllers/mainController')(nav);
+ */
+var mainController = require('../src/controllers/mainController')(nav);
 app.get('/', mainController.getData);
 
 const shoppingRouter = require('../src/routes/shoppingRouter')(nav);
@@ -44,11 +46,13 @@ const recipeRouter = require('../src/routes/recipeRouter')(nav);
 const ingredientRouter = require('../src/routes/ingredientsRouter')(nav);
 const authRouter = require('../src/routes/authRouter')(nav);
 const dataRouter = require('../src/routes/dataRouter')(nav);
+const typesRouter = require('../src/routes/typesRouter')(nav);
 app.use('/auth', authRouter);
 app.use('/ingredients', ingredientRouter);
 app.use('/recipes', recipeRouter);
 app.use('/data', dataRouter);
 app.use('/shopping', shoppingRouter);
+app.use('/types', typesRouter);
 
 app.listen(port, function(err) {
   if(err) {

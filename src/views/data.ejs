@@ -81,6 +81,18 @@
           <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
             value="delete directiosn" onclick="window.location.href='/data/deleteDirections %>'">
     </div>
+    <div class="col-md-3 well">
+          <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
+            value="show categories" onclick="window.location.href='/data/showCategories'">
+          <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
+            value="categories units" onclick="window.location.href='/data/deleteCategories %>'">
+    </div>
+    <div class="col-md-3 well">
+          <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
+            value="show units" onclick="window.location.href='/data/showUnits'">
+          <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
+            value="delete units" onclick="window.location.href='/data/deleteUnits %>'">
+    </div>
   </div>
 </div>
 
@@ -106,10 +118,12 @@
         </div>
       <% }%> 
       <% for (let recipesIngredient of recipesIngredients){ %>
-        <div class="col-sm-12 well">c
-          <span class="blue big"><%=recipesIngredient.recipe%></span>
-            <span class="blue big"><%=recipesIngredient.ingredient%></span>
-        </div>
+        <div class="col-sm-3 well well-sm">
+          <span ><%=recipesIngredient.recipe%></span>  
+          [<span style="color:red"><%=recipesIngredient.ingredient%></span>]
+          <span><%=recipesIngredient.quantity%></span> | 
+          <span><%=recipesIngredient.unit%></span>
+          </div>
       <% }%>
       <% for (let item of shoppingList){ %>
         <div class="col-sm-12">d
@@ -117,9 +131,19 @@
         </div>
       <% }%>
       <% for (let direction of directions){ %>
-        <div class="col-sm-6 well">e
+        <div class="col-sm-6 well">
         <span class="blue big"><%=direction.stepNumber%></span>
         <span ><%=direction.direction%></span>
+        </div>
+      <% }%>
+      <% for (let category of categories){ %>
+        <div class="col-sm-6 well">
+        <span class="blue big"><%=category.name%></span>
+        </div>
+      <% }%>
+      <% for (let unit of units){ %>
+        <div class="col-sm-6 well">
+        <span class="blue big"><%=unit.name%></span>
         </div>
       <% }%>
     </div>

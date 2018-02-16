@@ -17,19 +17,6 @@
   <link href="../css/styles.css" rel="stylesheet">
   <link href="../../css/styles.css" rel="stylesheet">
   <script src="/lib/jquery/dist/jquery.js"></script>
-  <script>
-  function myAlert(message) {
-    if ($("#visibilityButton").text() == 'hide') {
-      $("#panel").hide();
-      $("#visibilityButton").text("show");
-    } else {
-      $("#panel").show();
-      $("#visibilityButton").text("hide");
-    }
-  };
-  function alert2() {
-    alert('second');
-  }</script>
 </head>
 
 <body>
@@ -73,139 +60,125 @@
     </div>
   </header>
 
-  <div class="container">
+<div class="container">
     <div class="row">
       <div class="col-md-12">
-      <button onclick="myAlert('hide');" id="visibilityButton"><span>hide</span></button>
-      <% if (message.type ==  'error') {  %>
-      <div class="alert alert-danger">
-        <%=message.message%>
-      </div>      
-    <% } else if (message.type== 'success') { %>
-      <div class="alert alert-success">
-        <%=message.message%>
-      </div>      
-    <% } %>
+        <% if (message.type ==  'error') {  %>
+          <div class="alert alert-danger">
+            <%=message.message%>
+          </div>      
+        <% } else if (message.type== 'success') { %>
+          <div class="alert alert-success">
+            <%=message.message%>
+          </div>      
+        <% } %>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-12 well" id="panel">
-        <form name="recipeDetailForm" action="/recipes/addRecipe" method="POST">
+    <div class="row well">
+      <form name="recipeDetailForm" action="/recipes/saveRecipe" method="POST">
+        <div class="col-md-4">
+          <input style="margin-bottom:10px;" name="image" id="image" placeholder="" value="">
+          <input  type="button" class="btn btn-primary" name="add" value="add image" onclick="recipeImage.src=image.value;" />
+          <img width="100%" id="recipeImage" name="recipeImage" src="<%=recipe.image %>" />
+        </div>
+        <div class="col-md-7">
           <div class="row">
-            <div class="col-sm-3">
-              <label for="name">Image:</label>
-              <br/>
-              <input style="margin-bottom:10px;" name="image" id="image" placeholder="" value="">
-              <input type="button" name="add" value="add" onclick="recipeImage.src=image.value;" />
-              <center>
-                <img width="100%" id="recipeImage" name="recipeImage" src="<%=recipe.image %>" />
-              </center>
+            <div class="col-md-6">
+              <label for="name">Recipe Name</label>
+              <input style="margin-bottom:10px;"  class="form-control" name="name" id="name" value="<%=recipe.name %>">
             </div>
-            <div class="col-sm-9">
-              <div class="row">
-                <div class="col-sm-5">
-                    <label for="name">Recipe Name</label>
-                    <input style="margin-bottom:10px;"  class="form-control" name="name" id="name" value="<%=recipe.name %>">
-                </div>
-                <div class="col-sm-4">
-                    <label for="name">cook time</label>
-                    <input style="margin-bottom:10px;" class="form-control" name="timetoCook" id="timetoCook" value="<%=recipe.timetoCook %>">
-                </div>
-                  <div class="col-sm-3">
-                    <center>
-                    <label for="addedToWeek">add to week</label><br/>
-                    <% if (recipe.addedToWeek == 1) {%>
-                      <input name="addedToWeek"  class="center"  type="checkbox" checked></center>
-                    <% } else {%>
-                     <input name="addedToWeek"  class="center"  type="checkbox" ></center>
-                    <% }%>
-                  </div>
-                    </div>
-              <div class="row">
-                <div class="col">
-                  <label for="description">description</label>
-                  <textarea rows="4" class="form-control" style="margin-bottom:10px;" name="description" id="description"><%=recipe.description %></textarea>
-                  <center>
-                    <input type="submit" class="center btn-lg btn-primary" style="margin-top:20px;" value="Create Recipe">
-                    <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" value="Delete Recipe" onclick="window.location.href='/recipes/deleteRecipes?name=<%=recipe.name %>'">
-                    <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" value="  New Recipe  " onclick="window.location.href='/recipes/recipeDetail'">
-                  </center>
-              </div>
+            <div class="col-md-4">
+              <label for="name">cook time</label>
+              <input style="margin-bottom:10px;" class="form-control" name="timetoCook" id="timetoCook" value="<%=recipe.timetoCook %>">
+            </div>
+            <div class="col-md-2">
+              <label for="addedToWeek">add to week</label>
+              <% if (recipe.addedToWeek == 1) {%>
+              <input name="addedToWeek"  class="center"  type="checkbox" checked>
+              <% } else {%>
+              <input name="addedToWeek"  class="center"  type="checkbox" >
+              <% }%>
             </div>
           </div>
+          <div class="row">
+            <div class="col">
+              <label for="description">description</label>
+              <textarea rows="4" class="form-control" style="margin-bottom:10px;" name="description" id="description"><%=recipe.description %></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-1 center">
+          <input type="submit" class="form-control btn btn-primary" style="margin-top:20px;" value=" Save ">
+          <input type="button" class="form-control btn btn-primary" style="margin-top:20px;" value="Delete" onclick="window.location.href='/recipes/deleteRecipes?name=<%=recipe.name %>'">
+          <input type="button" class="form-control btn btn-primary" style="margin-top:20px;" value=" New  " onclick="window.location.href='/recipes/recipeDetail'">
+        </div>
+      </form>
+    </div>
+    <div class="row">
+      <div class="col-md-6 well well-lg">
+        <div class="center ">
+          <h4>Ingredients</h4>
+        </div>
+        <form name="addIngredient" action="/recipes/addIngredient?name=<%=recipe.name%>" method="POST">
+          <div class="row bottom-pad ">
+            <div class="col-md-12">
+              <select name="selectedIngredient" class="form-control " >
+                <% for (var i = 0; i <ingredients.length; i++) { %>
+                  <option  value="<%=ingredients[i].name%>"><%=ingredients[i].name%></option>
+                <% } %>
+              </select>
+            </div>
+          </div>
+          <div class="row bottom-pad">
+            <div class="col-md-4">
+              <input name="quantity" type="text" class="form-control bottom-pad "/>
+            </div>
+            <div class="col-md-4">
+              <select class="form-control" name="unit">
+                <% for (var i = 0; i <units.length; i++) { %>
+                  <option  value="<%=units[i].name%>"><%=units[i].name%></option>
+                <% } %>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <input type="submit" class=" btn btn-primary" value="Add">
+            </div>
           </div>
         </form>
+        <form name="removeIngredientForm" action="/recipes/removeIngredient?name=<%=recipe.name%>" method="POST">
+          <% for (let recipeIngredient of recipeIngredients) { %>
+            <div  >
+              <button class="linkButton" name="receipeIngredient" type="submit" value="<%=recipeIngredient.ingredient%>">
+                <%=recipeIngredient.quantity%> <%=recipeIngredient.unit%> <%=recipeIngredient.ingredient%>
+              </button>
+            </div>
+          <% } %>
+        </form>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12 well">
-        <div class="center bottom-pad">
-          <h3>
-            <%=recipe.name%>
-          </h3>
+      <div class="col-md-6 well">
+        <div class="center">
+          <h4>Directions</h4>
         </div>
-        <div class="row">
-          <div class="col-md-6 well well-lg">
-              <div class="center ">
-                <h4>Ingredients</h4>
-              </div>
-              <form name="addIngredient" action="/recipes/addIngredient?name=<%=recipe.name%>" method="POST">
-              <div class="row">
-                  <div class="col-md-9">
-                      <select name="selectedIngredient" class="form-control" >
-                          <% for (var i = 0; i <ingredients.length; i++) { %>
-                              <option value="<%=ingredients[i].name%>"><%=ingredients[i].name%></option>
-                            <% } %>
-                        </select>
-                  </div>
-                  <div class="col-md-3 center">
-                    <input type="submit" class=" btn-lg btn-primary" value="Add">
-                  </div>
-                </div>
-              </form>
-              <ul>
-                  <% for (let recipeIngredient of recipeIngredients) { %>
-                      <li onclick="alert('want to delete <%=recipeIngredient.ingredient%>')";><%=recipeIngredient.ingredient%></li>
-                <% } %>
-              </ul>
-          </div>
-          <div class="col-md-6 well">
-            <div class="center">
-              <h4>Directions</h4>
+        <form action="/recipes/addDirection?name=<%=recipe.name%>" method="Post">
+          <div class="row">
+            <div class="col-md-2">
+              <label for="stepNumber">step #</label>
+              <input type="text" class="form-control" name="stepNumber" id="stepNumber"/>
             </div>
-            <div>
-              <form action="/recipes/addDirection?name=<%=recipe.name%>" method="Post">
-                <div class="row well">
-                  <div class="col-12">
-                    <div class="row">
-                      <div class="col">
-                      <textarea class="form-control" type="type" name="direction" id="direction"></textarea>
-                      </div>
-                  </div>
-                  <div class="row"  style="border:1px black solid" >
-                    <div class="col-md-2">
-                      <label for="stepNumber">step #</label>
-                      </div>
-                      <div class="col-md-2">
-                        <input type="text" class="form-control" name="stepNumber" id="stepNumber"/>
-                    </div>
-                    <div class="col-md-8">
-                    <div class="left-padding">
-                    <button type="submit" class="btn btn-primary" value="add">add</button>
-                  </div>
-                </div>
-                </div>
-                <div class="row">
-                <div class="col">
-              </form>
-              <% for (let direction of directions)  {%>
-              <div onclick="window.location.href='/recipes/deleteDirection?name=<%=recipe.name%>.<%=direction.stepNumber%>'""><%=direction.stepNumber%>: <%=direction.direction%></div>
-              <% } %>
+            <div class="col-md-8">
+              <label for="direction">Direction</label>
+              <textarea class="form-control" type="type" name="direction" id="direction"></textarea>
+            </div>
+              <div class="col-md-2" ><br/>
+              <button type="submit" class="btn btn-primary" value="add">add</button>
             </div>
           </div>
+        </form></br>
+        <% for (let direction of directions)  {%>
+          <div onclick="window.location.href='/recipes/deleteDirection?name=<%=recipe.name%>.<%=direction.stepNumber%>'"><%=direction.stepNumber%>: <%=direction.direction%></div>
+        <% } %>
         </div>
       </div>
     </div>
-  </div>
-  </div>
-  <!-- /cont -->
+</div>
+<!-- /cont -->

@@ -7,14 +7,8 @@ const router = function (nav) {
 
     ingredientRouter.get('/', ingredientController.getData);
 
-    ingredientRouter.route('/newCategory')
-      .post(ingredientController.newCategory);
-
     ingredientRouter.route('/newIngredient')
       .post(ingredientController.newIngredient);
-
-      ingredientRouter.route('/deleteCategory')
-      .post(ingredientController.deleteCategory);
 
       ingredientRouter.route('/deleteIngredient')
       .get(ingredientController.deleteIngredient);

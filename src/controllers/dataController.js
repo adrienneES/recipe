@@ -1,6 +1,7 @@
 const recipeDAC = require('../data/recipeDAC')();
 const shoppingDAC = require('../data/shoppingDAC')();
 const ingredientDAC = require('../data/ingredientDAC')();
+const typesDAC = require('../data/typesDAC')();
 
 const render = function (res, data) {
   res.render('data', {
@@ -9,24 +10,27 @@ const render = function (res, data) {
     recipesIngredients: data.recipeIngredients,
     ingredients: data.ingredients,
     shoppingList: data.shoppingList,
+    categories: data.categories,
     collection: data.collection,
     directions : data.directions,
+    units: data.units,
     nav: data.nav});
 
 }
 const dataController = function (nav) {
   const ingredientController = require('../controllers/ingredientController')(nav);
   const recipeController = require('../controllers/recipeController')(nav);
-  let data = {recipes: [], recipeIngredients:[],ingredients:[], shoppingList:[], collection:'none', directions: [], nav:nav}
+  let data = {recipes: [], recipeIngredients:[],ingredients:[], shoppingList:[], directions: [], 
+    categories: [], units: [], collection:'none', nav:nav}
   const getData = function(req, res) {
     render(res, data);
   }
   const clearData = function () {
-    data = {recipes: [], recipeIngredients:[],ingredients:[], shoppingList:[], collection:'none', directions: [], nav:nav}  
+    data = {recipes: [], recipeIngredients:[], ingredients:[], shoppingList:[], directions: [],
+      categories: [], units: [], collection:'none', nav:nav}  
   }
   const showRecipes = function(req, res) {
     recipeDAC.getRecipeData(function (results) {
-      console.log(results);
       clearData();
       data.recipes = results;
       data.collection = 'Recipes';
@@ -80,7 +84,6 @@ const dataController = function (nav) {
     })
   }
   const showDirections = function(req, res) {
-    console.log('showing directions');
     recipeDAC.getAllDirections(results => {
       clearData();
       data.directions = results; 
@@ -90,6 +93,32 @@ const dataController = function (nav) {
   }
   const deleteDirections = function (req, res) {
     recipeDAC.deleteDirections(results=> {
+      getData(req, res);
+    })    
+  }
+  const showUnits = (req, res) => {
+    typesDAC.getUnits(results => {
+      clearData();
+      data.units = results; 
+      data.collection = 'units';
+      render(res, data);
+    });
+  }
+  const deleteUnits = function (req, res) {
+    typesDAC.deleteDirections(results=> {
+      getData(req, res);
+    })    
+  }
+  const showCategories = (req, res) => {
+    typesDAC.getCategories(results => {
+      clearData();
+      data.categories = results; 
+      data.collection = 'categories';
+      render(res, data);
+    });
+  }
+  const deleteCategories = function (req, res) {
+    typesDAC.deleteCategories(results=> {
       getData(req, res);
     })    
   }
@@ -105,7 +134,11 @@ const dataController = function (nav) {
         showShoppingList: showShoppingList,
         deleteShoppingList:deleteShoppingList,
         showDirections: showDirections,
-        deleteDirections:deleteDirections
+        deleteDirections:deleteDirections,
+        showUnits : showUnits, 
+        deleteUnits : deleteUnits,
+        showCategories : showCategories,
+        deleteCategories : deleteCategories
     }
   };
 

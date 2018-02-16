@@ -2,102 +2,110 @@ import mongo from 'mongodb';
 const mongodb = mongo.MongoClient;
 const url = 'mongodb://localhost:27017/tempDatabase';
 
-var recipeDAC = function() {
+var recipeDAC = () => {
 
-    const addDirectionToRecipe = function (direction, callback) {
-        mongodb.connect(url, function(err, db) {
+    const addDirectionToRecipe =  (direction, callback) => {
+        mongodb.connect(url, (err, db) => {
           const ingredientCollection = db.collection('directions');
           ingredientCollection.insert({
-            recipe:direction.recipe, direction:direction.direction, stepNumber:direction.stepNumber}, function (err, data) { 
+            recipe:direction.recipe, direction:direction.direction, stepNumber:direction.stepNumber},  (err, data) => { 
               callback(data);
             }
           );
         });
       }
-      const getADirection = function (recipeName, stepNumber, callback) {
-        mongodb.connect(url, function(err, db) { 
+      const getADirection =  (recipeName, stepNumber, callback) => {
+        mongodb.connect(url, (err, db) => { 
           console.log(`looking for ${stepNumber} : ${recipeName}`);
           const ingredientCollection = db.collection('directions');
           let query = { recipe: recipeName, stepNumber:stepNumber  };
-          ingredientCollection.find(query).toArray(function(err, results){
+          ingredientCollection.find(query).toArray((err, results) =>{
             console.log(results);
             callback(results);
           });
         });
       }
-      const getDirections = function (recipeName, callback) {
-        mongodb.connect(url, function(err, db) { 
+      const getDirections =  (recipeName, callback) => {
+        mongodb.connect(url, (err, db) => { 
           const ingredientCollection = db.collection('directions');
-          ingredientCollection.find({recipe:recipeName}).toArray(function(err, results){
+          ingredientCollection.find({recipe:recipeName}).toArray((err, results) => {
             callback(results);
           });
         });
       }
-      const getAllDirections = function (callback) {
-        mongodb.connect(url, function(err, db) { 
+      const getAllDirections =  (callback) => {
+        mongodb.connect(url, (err, db) => { 
           const ingredientCollection = db.collection('directions');
-          ingredientCollection.find().toArray(function(err, results){
+          ingredientCollection.find().toArray((err, results) => {
             callback(results);
           });
         });
       }
 
-      const deleteDirections = function (callback) {
-        mongodb.connect(url, function(err, db) { 
+      const deleteDirections =  (callback) => {
+        mongodb.connect(url, (err, db) => { 
           const directionCollection = db.collection('directions');
-          directionCollection.remove({}, function (err, results) { 
+          directionCollection.remove({},  (err, results) => { 
               callback(results);
           } );
         });
       }
     
-      const deleteDirectionFromRecipe = function (req, res,direction, callback) {
-        mongodb.connect(url, function(err, db) { 
+      const deleteDirectionFromRecipe =  (req, res,direction, callback) => {
+        mongodb.connect(url, (err, db) => { 
           const directionCollection = db.collection('directions');
           let query = { recipe: direction.recipeName, stepNumber:direction.stepNumber  };
           directionCollection.remove(query, (err, results)=>{
-            getRecipe(req, res)
+            callback(results);
           })
         });
       }
-      const getRecipeData = function (callback) {
-        mongodb.connect(url, function (err, db) {
+      const getRecipeData =  (callback) => {
+        mongodb.connect(url,  (err, db) => {
           const recipeCollection = db.collection('recipes');
-          recipeCollection.find({}).toArray(function (err, results) {
+          recipeCollection.find({}).toArray( (err, results) => {
             callback(results);
           });
         });
       }
-      const getRecipeByName = function (item, callback) {
-        mongodb.connect(url, function (err, db) { 
+      const getRecipeByName =  (item, callback) => {
+        mongodb.connect(url,  (err, db) => { 
           const collection = db.collection('recipes');
           if (collection) {
-            collection.findOne({recipe:item}, function (err, recipe) { 
+            collection.findOne({name:item},  (err, recipe) => { 
               callback(recipe);
             });
           }
         });
       }
-      const insertNewRecipe = function (recipe, callback) {
-        mongodb.connect(url, function (err, db) {
+      const insertNewRecipe =  (recipe, callback) => {
+        mongodb.connect(url,  (err, db) => {
           const collection = db.collection('recipes');
-          collection.insert(recipe, function (err, results) {
+          collection.insert(recipe,  (err, results) => {
             callback(results);
            });
          });
       }
-      const deleteRecipe = function (recipeName, callback) {
-        mongodb.connect(url, function (err, db) { 
+      const updateRecipe =  (recipe, data, callback) => {
+        mongodb.connect(url,  (err, db) => {
           const collection = db.collection('recipes');
-          collection.remove(recipeName? {name:recipeName} : {}, function (err, results) { 
+          collection.updateOne(recipe, { $set: { "description" : 'new description' } },  (err, results) => {
+            callback(results);
+           });
+         });
+      }
+      const deleteRecipe =  (recipeName, callback) => {
+        mongodb.connect(url,  (err, db) => { 
+          const collection = db.collection('recipes');
+          collection.remove(recipeName? {name:recipeName} : {},  (err, results) => { 
             callback(results);
           });
         });  
       }
-      const deleteAllRecipes = function (callback) {
-        mongodb.connect(url, function (err, db) { 
+      const deleteAllRecipes =  (callback) => {
+        mongodb.connect(url,  (err, db) => { 
           const collection = db.collection('recipes');
-          collection.remove({}, function (err, results) { 
+          collection.remove({},  (err, results) => { 
             callback(results);
           });
         });  
@@ -106,47 +114,56 @@ var recipeDAC = function() {
 
   
   // recipeIngredient
-  const getAllRecipeIngredients = function(callback) {
-    mongodb.connect(url, function(err, db) { 
+  const getAllRecipeIngredients = (callback) => {
+    mongodb.connect(url, (err, db) => { 
       const ingredientCollection = db.collection('recipeIngredients');
-      ingredientCollection.find({}).toArray(function(err, results){
+      ingredientCollection.find({}).toArray((err, results) => {
         callback(results);
       });
     });
   }
-  const getRecipeIngredients = function(recipeName, callback) {
-    mongodb.connect(url, function(err, db) { 
+  const getRecipeIngredients = (recipeName, callback) => {
+    mongodb.connect(url, (err, db) => { 
       const ingredientCollection = db.collection('recipeIngredients');
-      ingredientCollection.find({recipe:recipeName}).toArray(function(err, results){
+      ingredientCollection.find({recipe:recipeName}).toArray((err, results) => {
         callback(results);
       });
     });
   }
-  const findIngredientInRecipe = function(ingredient, callback) {
-    mongodb.connect(url, function(err, db) {
+  const findIngredientInRecipe = (ingredient, callback) => {
+    mongodb.connect(url, (err, db) => {
       const ingredientCollection = db.collection('recipeIngredients');
       ingredientCollection.findOne({
-        recipe:ingredient.recipe, ingredient:ingredient.ingredient}, function (err, data) { 
+        recipe:ingredient.recipe, ingredient:ingredient.ingredient},  (err, data) => { 
         callback(data);
       }
     );
    });
   }
-  const addIngredientToRecipe = function(ingredient, callback) {
-    mongodb.connect(url, function(err, db) {
+  const addIngredientToRecipe = (ingredient, callback) => {
+    mongodb.connect(url, (err, db) => {
       const ingredientCollection = db.collection('recipeIngredients');
-      ingredientCollection.insert({
-        recipe:ingredient.recipe, ingredient:ingredient.ingredient}, function (err, data) { 
+      ingredientCollection.insert(ingredient,  (err, data) => { 
           callback(data);
         }
       );
     });
   }
+    const deleteIngredientFromRecipe =  (req, res, ingredient, callback) => {
+    mongodb.connect(url, (err, db) => { 
+      const ingredientCollection = db.collection('recipeIngredients');
+      ingredientCollection.remove(ingredient,(err, results)=>{
+        callback(results);
+      })
+    });
+  }
+
+
   const getRecipesForWeek = (callback) =>
   {
-    mongodb.connect(url, function (err, db) { 
+    mongodb.connect(url,  (err, db) => { 
       const collection = db.collection('recipes');
-      collection.find({addedToWeek : 1}).toArray(function(err, data){
+      collection.find({addedToWeek : 1}).toArray((err, data) => {
         callback(data);
        });
     });
@@ -162,12 +179,14 @@ var recipeDAC = function() {
         getRecipeData : getRecipeData,
         getRecipeByName : getRecipeByName,
         insertNewRecipe : insertNewRecipe,
+        updateRecipe : updateRecipe,
         deleteRecipe : deleteRecipe,
         deleteAllRecipes : deleteAllRecipes,
         getAllRecipeIngredients : getAllRecipeIngredients,
         getRecipeIngredients : getRecipeIngredients,
         findIngredientInRecipe : findIngredientInRecipe,
         addIngredientToRecipe : addIngredientToRecipe,
+        deleteIngredientFromRecipe : deleteIngredientFromRecipe,
         getRecipesForWeek : getRecipesForWeek
     };
 }
