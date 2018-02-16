@@ -55,7 +55,7 @@ const typesDAC =  () => {
         });
     }
     const deleteUnits = (callback) => {
-        mongodb.connect(url, function (err, db) { 
+        mongodb.connect(url, (err, db) => { 
             const collection = db.collection('units');
             collection.remove({},  (err, results) => { 
                 callback(results);

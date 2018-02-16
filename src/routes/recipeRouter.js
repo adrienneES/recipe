@@ -14,10 +14,12 @@ const router = function (nav) {
     .get('/deleteRecipes', recipeController.deleteRecipes);
     recipeRouter
     .get('/deleteDirection', recipeController.deleteDirection);
-  recipeRouter.route('/addRecipe')
-    .post(recipeController.addRecipe);
+  recipeRouter.route('/saveRecipe')
+    .post(recipeController.saveRecipe);
     recipeRouter.route('/addIngredient')
     .post(recipeController.addIngredient);
+    recipeRouter.route('/removeIngredient')
+    .post(recipeController.removeIngredient);
     recipeRouter.route('/addDirection')
     .post(recipeController.addDirection);
 
