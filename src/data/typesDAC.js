@@ -11,23 +11,44 @@ const typesDAC =  () => {
             });
         });
     }
-    const createCategory = (categoryName, callback) => {
+    const createCategory = (category, callback) => {
         mongodb.connect(url, (err, db) => { 
             const categoryCollection = db.collection('categories');
-            categoryCollection.insert(categoryName,  (err, data) => {
+            categoryCollection.insert(category,  (err, data) => {
+              callback(data);
+            });
+        });
+    }
+    const addCategories = (categories, callback) => {
+        mongodb.connect(url, (err, db) => { 
+            const categoryCollection = db.collection('categories');
+            categoryCollection.insertMany(categories,  (err, data) => {
               callback(data);
             });
         });
     }
     const deleteCategory = (category, callback) => {
         mongodb.connect(url, (err, db) => { 
+            console.log('going to delete');
+            console.log(category);
             const categoryCollection = db.collection('categories');
-            categoryCollection.remove({name: category}, (results) => {
+            categoryCollection.remove({name: category.name}, (results) => {
                 callback(results);
               }
             );
         });
     }
+    const flipAutoOrder = (category, callback) => {
+        mongodb.connect(url, (err, db) => { 
+            const categoryCollection = db.collection('categories');
+            categoryCollection.updateOne({name: category.name}, {
+                $set:{ "autoOrder": category.autoOrder}},  
+                (err, data) => {
+//                console.log(data);
+              callback(data);
+            });
+        });
+      }
     const deleteCategories = (callback) => {
         mongodb.connect(url, (err, db) => { 
             const categoryCollection = db.collection('categories');
@@ -74,7 +95,9 @@ const typesDAC =  () => {
   
     return {
         createCategory : createCategory,
+        addCategories : addCategories,
         deleteCategory : deleteCategory,
+        flipAutoOrder : flipAutoOrder,
         getCategories : getCategories,
         deleteCategories : deleteCategories,
         getUnits : getUnits, 

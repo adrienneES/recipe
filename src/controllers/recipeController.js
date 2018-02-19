@@ -18,7 +18,7 @@ const recipeController =  (nav) => {
       message:data.message,
       recipe:data.recipe,
       directions:data.directions,
-      nav: data.nav});
+      nav: nav});
   }
 
   const getRecipes = (req, res) => {
@@ -28,16 +28,15 @@ const recipeController =  (nav) => {
     });
   }
   const saveRecipe =  (req, res) => {
-    const currentWeek = (req.body.addedToWeek == 'on') ? 1 : 0;
+    const currentWeek = (req.body.addedToWeek == 'on') ? 'yes' : 'no';
     const recipeName = req.body.name;
-    const recipe = {name : recipeName, time : req.body.timetoCook, description: req.body.description,
-      image: req.body.image,  addedToWeek: currentWeek };
+    const recipe = {name : recipeName, timetoCook : req.body.timetoCook, description: req.body.description,
+      recipeImage: req.body.recipeImage,  addedToWeek: currentWeek };
     console.log('save a recipe');
     console.log(recipe);
     recipeDAC.getRecipeByName(recipeName, (data) => {
       if (data)  {
         console.log(`updaing ${recipeName}`);
-        console.log(recipe);
         recipeDAC.updateRecipe({name: recipeName},recipe, (results) => {
           res.redirect('/recipes/recipeDetail/' + recipeName + '?success=inserted%20successfully');
         });
@@ -112,11 +111,11 @@ const recipeController =  (nav) => {
     })
   }
   const deleteDirection =  (req, res) => {
-    let a = req.query.name.split('.');
-    const direction = {recipeName: a[0], stepNumber:a[1] };
+    let queryArray = req.query.name.split('.');
+    const direction = {recipeName: queryArray[0], stepNumber:queryArray[1] };
     // if this step exists for recipe, do not add
     recipeDAC.deleteDirectionFromRecipe(req, res, direction, (results) => {
-      res.redirect('/recipes/recipeDetail/'+ a[0]+ '?success=deleted');
+      res.redirect('/recipes/recipeDetail/'+ queryArray[0]+ '?success=deleted');
     })
   }
 
@@ -144,10 +143,9 @@ const recipeController =  (nav) => {
   }
   
   const removeIngredient = (req, res) => {
-    const ingredient = {recipe:req.query.name,ingredient:req.body.recipeIngredient};
-    console.log('removeIngredient');
-    console.log(ingredient);
-    recipeDAC.deleteIngredientFromRecipe(req, res, ingredient, (results) => {
+    const recipeIngredient = {recipe:req.query.name,ingredient:req.body.recipeIngredient};
+    console.log(req.body);
+    recipeDAC.deleteIngredientFromRecipe(recipeIngredient, (results) => {
       res.redirect('/recipes/recipeDetail/'+ req.query.name + '?success=deleted');
     })
   }

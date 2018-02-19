@@ -79,13 +79,13 @@
           <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
             value="show directions" onclick="window.location.href='/data/showDirections'">
           <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
-            value="delete directiosn" onclick="window.location.href='/data/deleteDirections %>'">
+            value="delete directions" onclick="window.location.href='/data/deleteDirections %>'">
     </div>
     <div class="col-md-3 well">
           <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
             value="show categories" onclick="window.location.href='/data/showCategories'">
           <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
-            value="categories units" onclick="window.location.href='/data/deleteCategories %>'">
+            value="delete categories" onclick="window.location.href='/data/deleteCategories %>'">
     </div>
     <div class="col-md-3 well">
           <input type="button" class=" btn-lg btn-primary" style="margin-top:20px;" 
@@ -105,20 +105,20 @@
     <div class="center"><%=collection%></div>
     <div class="row">
       <% for (let recipe of recipes){ %>
-          <div class="col-sm-3 well">a
+          <div class="col-sm-3 well">
               <span class="blue big"><%=recipe.name%></span>
               <span><%=recipe.description%></span>
           </div>
       <% }%>
       <% for (let ingredient of ingredients){ %>
-        <div class="col-sm-3 well">b
+        <div class="col-sm-3 well">
           <span class="blue big"><%=ingredient.name%></span>
           <span><%=ingredients[i].category%></span>
           <span><%=ingredients[i].staple%></span>
         </div>
       <% }%> 
       <% for (let recipesIngredient of recipesIngredients){ %>
-        <div class="col-sm-3 well well-sm">
+        <div class="col-sm-3 well well-lg tall">
           <span ><%=recipesIngredient.recipe%></span>  
           [<span style="color:red"><%=recipesIngredient.ingredient%></span>]
           <span><%=recipesIngredient.quantity%></span> | 
@@ -126,7 +126,7 @@
           </div>
       <% }%>
       <% for (let item of shoppingList){ %>
-        <div class="col-sm-12">d
+        <div class="col-sm-12">
           <%=item.ingredient%>
         </div>
       <% }%>
@@ -137,8 +137,9 @@
         </div>
       <% }%>
       <% for (let category of categories){ %>
-        <div class="col-sm-6 well">
+        <div class="col-sm-3 well">
         <span class="blue big"><%=category.name%></span>
+        <span class=""><%=category.autoOrder%></span>
         </div>
       <% }%>
       <% for (let unit of units){ %>

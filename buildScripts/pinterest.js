@@ -1,29 +1,41 @@
-var pinterestAPI = require('pinterest-api');
+/*var pinterestAPI = require('pinterest-api');
 const pinterest = pinterestAPI('adricurtis');
 var pinData;
     // Get pins from a board (second parameter determines whether you want the results paginated and to include some metadata)
     pinterestAPI.getDataForPins('833658580996442221', function (pins) {
-      debugger;
       var data = pins.data[0];
+      debugger;
+      var images = data.images;
+      var image = images["237x"].url;
       var recipe =data.rich_metadata.recipe 
-      var name = data.name;
+      var name = data.description;
+      var location = data.link;
+      var description = data.rich_metadata.description+ "; url:" + location;
       var numIngredients = recipe.categorized_ingredients.length;
-      for (let catIngred of recipe.categorized_ingredients) {
-        var category = catIngred.category;
-        let numIngreds = catIngred.ingredients.length;
-        for (var i = 0; i < catIngred.ingredients.length; i++) {
-          var ingredient = catIngred.ingredients[i];
-          var name = ingredient.name;
-          var amt = ingredient.amt;
-          console.log(ingredient);
-          }
+      var recipe = {
+        name: name, 
+        description: description,
+        image: image
+      };
+      console.log(recipe);
+      var ingredients  = [];
+      var recipeIngredients = [];
+      for (let category of data.rich_metadata.recipe.categorized_ingredients) {
+        var categoryName = category.category;
+        let numIngreds = category.ingredients.length;
+        console.log(categoryName);
+        for (ing of category.ingredients) {
+          var recipeIngredient = {
+           name : ing.name,
+           amt : ing.amt,
+           unit : ing.unit};
+          };
+          ingredients.push({name: name, category: category.category});
+          recipeIngredients.push(recipeIngredient);
       }
-        console.log(v.rich_metadata.recipe);
-        if (pins.length == 1) {
-          let obj = pin.repin_count;
-          console.log(obj);
-      }
-      else {
-        console.log(pins.data);
-    }
+      console.log(recipeIngredients);
+      console.log(ingredients);
+      debugger;
+
     });
+    */

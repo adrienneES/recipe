@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <title>
+    <%=title %>
+  </title>
+  <meta name="generator" content="Bootply" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.css" />
+  <!--[if lt IE 9]>
+			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+    </head>
+
+<body>
+  <header class="navbar navbar-bright navbar-fixed-top" role="banner">
+    <div class="container">
+      <div class="navbar-header">
+        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a href="/" class="navbar-brand">Home</a>
+      </div>
+      <nav class="collapse navbar-collapse" role="navigation">
+        <ul class="nav navbar-nav">
+          <% for (var i = 0; i <nav.length; i++) { %>
+            <li>
+              <a href='<%= nav[i].link %>'>
+                <%=nav[i].text %>
+              </a>
+            </li>
+            <% } %>
+        </ul>
+        <ul class="nav navbar-right navbar-nav">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="glyphicon glyphicon-search"></i>
+            </a>
+            <ul class="dropdown-menu" style="padding:12px;">
+              <form class="form-inline">
+                <button type="submit" class="btn btn-default pull-right">
+                  <i class="glyphicon glyphicon-search"></i>
+                </button>
+                <input type="text" class="form-control pull-left" placeholder="Search">
+              </form>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+<div class="container well">
+  <div class="row">
+    <div class="col">
+    <% if (message.type ==  'error') {  %>
+    <div class="alert alert-danger">
+      <%=message.message%>
+    </div>      
+  <% } else if (message.type== 'success') { %>
+    <div class="alert alert-success">
+      <%=message.message%>
+    </div>      
+  <% } %>
+</div>
+  </div> 
+  <div class="row">
+    <div class="col-md-6">
+    <form name="pinForm" action="/pinterest/getPinData" method="post">
+    <select name="pin">
+      <% for (pin of ids ) {%>
+      <option value="<%=pin.id%>"><%=pin.name%></option>
+      <% } %>
+    </select>
+    <button type="submit" class="btn-primary btn">find Pin</button>
+  </form>
+</div>
+<div class="col-md-6">
+<form name="boardForm" action="/pinterest/getNewBoardData" method="post">
+<input type="text" name="boardName" placeholder="enter board name">
+<button type="submit" class="btn-primary btn">get board data</button>
+</form>
+</div>
+  </div>
+</div>
+<div class="container well">
+  <div class="row">
+    <div class="col center">
+    <h1><%=recipe.name%></h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+    <image src="<%=recipe.recipeImage%>"/>
+    </div>
+    <div class="col-md-9 well">
+      <div class="center"> 
+      <%=recipe.description%></br>
+      </div>
+      <% if (!recipe.name) {%>
+      <% } else if (recipeIngredients.length == 0) { %>
+      <h1 class="center blue  ">No ingredient data found</h1>
+      <% } else { %>
+        <div class="row" >
+          <div class="col-md-10">
+          <span class="big blue">RecipeIngredients</span>
+          </div>
+          <div class="col-md-2">
+          <form action="/pinterest/addData?id=<%=id%>" method="POST">
+          <button class="btn btn-primary" type="submit" >Add data</button>
+          </form>
+          </div>
+        </div>
+      <%} %>
+      <% for (ingredient of recipeIngredients) {%>
+        <%=ingredient.quantity%>  <%=ingredient.unit%>  <%=ingredient.ingredient %><br/>
+      <% } %>
+      <% if (ingredients.length > 0) { %>
+      <span class="big blue">Ingredients</span></br/>
+      <%} %>
+      <% for (ingredient of ingredients) {%>
+      <%=ingredient.name %><br/>
+      <% } %>
+      <% if (categories.length > 0) { %>
+      <span class="big blue">categories</span></br/>
+      <% } %>
+      <% for (category of categories) {%>
+      <%=category.name %><br/>
+      <% } %>
+    </div>
+  </div>
+</div>
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6">
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- script references -->
+  <script src="/lib/jquery/dist/jquery.js"></script>
+  <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="bundle.js"></script>
+</body>
+
+</html>

@@ -3,7 +3,7 @@ import path  from 'path';
 import open  from 'open';
 import webpack from 'webpack';
 import config from '../webpack.config.dev';
-import bodyParser from 'body-parser';
+import bodyParser from 'body-parser'; 
 // import
 //var pinterestAPI = require('pinterest-api');
 
@@ -28,16 +28,18 @@ app.set('view engine', 'ejs');
 const nav = [
   {link: '/ingredients', text: 'ingredients'},
   {link: '/recipes', text: 'recipes'},
+  {link: '/pinterest', text: 'pinterest'},
   {link: '/shopping', text: 'shopping'},
   {link: '/types', text: 'types'},
   {link: '/data', text: 'data'}
-]
+] 
 /* var middleware = function (req, res, next) {
   console.log('middleware!');
   next();
 };
 app.use(middleware);
  */
+
 var mainController = require('../src/controllers/mainController')(nav);
 app.get('/', mainController.getData);
 
@@ -47,12 +49,14 @@ const ingredientRouter = require('../src/routes/ingredientsRouter')(nav);
 const authRouter = require('../src/routes/authRouter')(nav);
 const dataRouter = require('../src/routes/dataRouter')(nav);
 const typesRouter = require('../src/routes/typesRouter')(nav);
+const pinterestRouter = require('../src/routes/pinterestRouter')(nav);
 app.use('/auth', authRouter);
 app.use('/ingredients', ingredientRouter);
 app.use('/recipes', recipeRouter);
 app.use('/data', dataRouter);
 app.use('/shopping', shoppingRouter);
 app.use('/types', typesRouter);
+app.use('/pinterest', pinterestRouter);
 
 app.listen(port, function(err) {
   if(err) {

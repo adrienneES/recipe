@@ -1,16 +1,19 @@
 import mongo from 'mongodb';
 const mongodb = mongo.MongoClient;
 const url = 'mongodb://localhost:27017/tempDatabase';
+const typesDAC = require('../data/typesDAC')();
 
 var ingredientDAC =  () =>{
     const getIngredients =  (callback) => {
         mongodb.connect(url, (err, db) => { 
             const collection = db.collection('ingredients');
-            collection.find({}).toArray((err, results) => {
-              callback(results);
+                typesDAC.getCategories(() => {
+                    collection.find({}).toArray((err, results) => {
+                        callback(results);
+                    });
+                });
             });
-        });
-    }
+        }
     const getIngredient =  (ingredientName, callback) => {
       mongodb.connect(url, (err, db) => { 
           const collection = db.collection('ingredients');
@@ -22,7 +25,7 @@ var ingredientDAC =  () =>{
     const deleteIngredients =  (callback) => {
         mongodb.connect(url, (err, db) => { 
           const collection = db.collection('ingredients');
-          collection.remove({name: category},  (err, data) => {
+          collection.remove({},  (err, data) => {
             callback(data);
           } );
         });
@@ -33,8 +36,15 @@ var ingredientDAC =  () =>{
             ingredientCollection.insert(ingredient,  (err, results) => {
                 callback(results);
             });
+        });
+    }
+    const newIngredients = (ingredients, callback)=> {
+        mongodb.connect(url, (err, db) => { 
+            const ingredientCollection = db.collection('ingredients');
+            ingredientCollection.insertMany(ingredients,  (err, results) => {
+                callback(results);
             });
-        
+        });
     }
     const deleteIngredient = (ingredient, callback) => {
         mongodb.connect(url,(err, db) => { 
@@ -57,6 +67,7 @@ var ingredientDAC =  () =>{
         getIngredients : getIngredients, 
         deleteIngredients : deleteIngredients,
         newIngredient : newIngredient,
+        newIngredients : newIngredients,
         getIngredient : getIngredient,
         deleteIngredient : deleteIngredient,
         deleteRecipeIngredients : deleteRecipeIngredients

@@ -31,14 +31,14 @@ const shoppingController = function(nav) {
     }
     const insertItemInShoppingList = function (req, res) {
         const insertedItem = req.body.ingredientsSelect;
-        const item = {ingredient: insertedItem}
+        let queryArray = insertedItem.split('.');
+        const item = {ingredient: queryArray[0], category : queryArray[1]};
         // if its in the collection don't add
         shoppingDAC.findItemInShoppingList(item, (results) => {
             if (results) {
                 console.log(`found ${insertedItem} not inserting'`);
                 render(res, {view:'shopping', title:'shopping list',ingredients:ingredientList, 
                 message:{type:'error', message: 'already there'}, shoppingList: shoppingList, nav:nav})
-
             } else {
                 shoppingDAC.insertItemInShoppingList(item, (results) => {
                     // get update shopping list
@@ -65,7 +65,14 @@ const shoppingController = function(nav) {
         const recipeName = req.query.name;
         const recipeController = require('../controllers/recipeController')(nav);
         recipeDAC.getRecipeIngredients(recipeName, function (results) {
-            res.send('needs more work');
+            let ingredientArray = [];
+            for(let recipeIngredient of results) {
+                ingredientArray.push(recipeIngredient.ingredient);
+            }
+            console.log(ingredientArray);
+            ingredientDAC.getIngredients(ingredientArray, (results) => {
+                res.send(results);
+            })
         });
     }
 

@@ -63,16 +63,16 @@
     <% } %>
     <form name="deleteItem" action="/shopping/delete" method="POST">
       <%for (let item of shoppingList ){ %>
-        <input class="linkButton" type="submit" name='ingredientsSelect' value='<%=item.ingredient%>'/></br>
+        <button class="linkButton" type="submit" name='ingredientsSelect' value='<%=item.ingredient%>'>
+        <%=item.ingredient%>(<%=item.category%>)</button></br>
       <% }%>
     </form>
   </div>
   <div class="col-md-3 well">
   <form name="insertShopping" action="/shopping/add" method="POST">
     <%for (let ingredient of ingredients) { %>
-        <input class="linkButton" type="submit" name='ingredientsSelect' value='<%=ingredient.name%>'/></br>
+        <button class="linkButton" type="submit" name='ingredientsSelect' value='<%=ingredient.name%>.<%=ingredient.category%>'><%=ingredient.name%>(<%=ingredient.category%>)</button></br>
     <% } %>
-  <input type="submit" value="add">
 </form>
 </div>
   </div>

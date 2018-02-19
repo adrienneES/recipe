@@ -5,7 +5,9 @@ const router = (nav) => {
     const typesController = require('../controllers/typesController')(nav);
     typesRouter.get('/',typesController.getData);
     typesRouter.route('/deleteCategory')
-        .post(typesController.deleteCategory);
+        .get(typesController.deleteCategory);
+        typesRouter.route('/flipAutoOrder')
+        .post(typesController.flipAutoOrder);
     typesRouter.route('/newCategory')
         .post(typesController.newCategory);
     typesRouter.route('/deleteUnit')
