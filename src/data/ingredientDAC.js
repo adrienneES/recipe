@@ -36,7 +36,7 @@ var ingredientDAC =  () =>{
           } );
         });
     }
-    const newIngredient = (ingredient, callback)=> {
+    const saveIngredient = (ingredient, callback)=> {
         mongodb.connect(url, (err, db) => { 
             const ingredientCollection = db.collection('ingredients');
             ingredientCollection.insert(ingredient,  (err, results) => {
@@ -44,7 +44,16 @@ var ingredientDAC =  () =>{
             });
         });
     }
-    const newIngredients = (ingredients, callback)=> {
+    const updateIngredient = (ingredient, callback)=> {
+        mongodb.connect(url, (err, db) => { 
+            const ingredientCollection = db.collection('ingredients');
+            ingredientCollection.updateOne({name: ingredient.name}, {$set:{'category':ingredient.category}},  
+                  (err, results) => { 
+                      callback(results);
+                });
+        });
+    }
+    const saveIngredients = (ingredients, callback)=> {
         mongodb.connect(url, (err, db) => { 
             // dont want to insert dups
             let nameList = [];
@@ -98,8 +107,9 @@ var ingredientDAC =  () =>{
         getIngredients : getIngredients, 
         getIngredientsForRecipe : getIngredientsForRecipe,
         deleteIngredients : deleteIngredients,
-        newIngredient : newIngredient,
-        newIngredients : newIngredients,
+        saveIngredient : saveIngredient,
+        updateIngredient : updateIngredient,
+        saveIngredients : saveIngredients,
         getIngredient : getIngredient,
         deleteIngredient : deleteIngredient,
         deleteRecipeIngredients : deleteRecipeIngredients

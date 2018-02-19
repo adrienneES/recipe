@@ -14,8 +14,9 @@
   <!--[if lt IE 9]>
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
-  <link href="css/styles.css" rel="stylesheet">
-</head>
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+    </head>
 
 <body>
   <header class="navbar navbar-bright navbar-fixed-top" role="banner">
@@ -75,26 +76,30 @@
         </div>      
       <% } %>
       <h4 class="center">New Ingredient</h4>
-      <form name="recipeDetail" action="/ingredients/newIngredient" method="post">
+      <form name="recipeDetail" action="/ingredients/saveIngredient" method="post">
         <div class="row" >
           <div class="col-md-1">Category</div>
           <div class="col-md-3">
-            <select name="ingredientCategory" class="form-control">
-              <% for (var i = 0; i <categories.length; i++) { %>
+            <select name="ingredientCategory" class="form-control" >
+              <% for (let currentCategory of categories) { %>
                 <li>
-                  <option value="<%=categories[i].name%>"><%=categories[i].name%></option>
+                  <% if (category == currentCategory.name) { %>
+                  <option selected value="<%=currentCategory.name%>"><%=currentCategory.name%></option>
+                  <% } else { %>
+                  <option value="<%=currentCategory.name%>"><%=currentCategory.name%></option>
+                  <% } %>
                 </li>
                 <% } %>
             </select>
           </div>
           <div class="col-md-1">Name</div>
           <div class="col-md-6">
-            <input type="text" class="form-control" name="ingredientName">
+            <input type="text" class="form-control" name="ingredientName" value="<%=name%>">
           </div>
         </div>
         <div class="row">
           <div class="col-6 text-center">
-            <input type="submit" class="btn-lg btn-primary" value="Add Ingredient" style="margin-top:10px;">
+            <input type="submit" class="btn-primary" value="Add Ingredient" style="margin-top:10px;">
           </div>
         </div>
       </form>
@@ -102,22 +107,16 @@
       <div class="well well-lg">
         <h4 class="center">All Ingredients</h4>
         <div class="row" >
-          <% for (var i = 0; i< ingredients.length; i++) { %>
-          <div class="col-md-3 well tall" display="inline-block" 
-              onclick="window.location.href='/ingredients/deleteIngredient?ingredientName=<%=ingredients[i].name %>'">
+          <% for ( ingredient of ingredients) { %>
+          <div class="col-md-3 well tall" display="inline-block" onclick="window.location.href='/ingredients/editIngredient?ingredientName=<%=ingredient.name %>'">
             <form name="deleteIngredient" action="/ingredients/deleteIngredient" method="post">
-            <div class="row">
-              <div class="col-12">
-              <h4 style="margin-right:10px;padding-right:10px;" name="ingredientName" value="b"><%=ingredients[i].name %></h4>
+              <div class="row">
+                <div class="col-12">
+                  <button type="submit" class="close" value="<%=ingredient.name%>" name="ingredientName">X</button>
+                  <h4 style="margin-right:10px;padding-right:10px;" name="ingredientName" value="b"><%=ingredient.name %></h4>
+                  <span class="small"><%=ingredient.category %></span>
+                </div>
               </div>
-            </div>
-            <div class="row">
-            <div class="col-md-9">
-            <span class="small"><%=ingredients[i].category %></span>
-            </div>
-            <div class="col-md-3">
-        </div>
-        </div>
             </form>
           </div>
         <% }%>

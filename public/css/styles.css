@@ -173,9 +173,6 @@ a,a:hover {
 .ingredientBlock:hover {
   background-color:lightgrey;
 }
-#newIngredientBlock {
-  border:blue 1px solid;
-}
 .left-padding {
   padding-left: 20px;
   float: right;

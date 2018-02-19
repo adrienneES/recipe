@@ -98,7 +98,7 @@ const pinterestController = (nav) => {
             const returnedData = getData(recipeName, id, pins);
             typesDAC.addCategories(returnedData.categories, (results) => {
                 // add ingredients
-                ingredientDAC.newIngredients(returnedData.ingredients, (results) => {
+                ingredientDAC.saveIngredients(returnedData.ingredients, (results) => {
                     // add recipe ingredients
                     recipeDAC.addIngredientsToRecipes(returnedData.recipeIngredients, (results) => {
                         recipeDAC.insertNewRecipe(returnedData.recipe, (results) => {

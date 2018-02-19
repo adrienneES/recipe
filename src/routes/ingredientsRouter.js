@@ -7,11 +7,13 @@ const router = function (nav) {
 
     ingredientRouter.get('/', ingredientController.getData);
 
-    ingredientRouter.route('/newIngredient')
-      .post(ingredientController.newIngredient);
+    ingredientRouter.route('/saveIngredient')
+      .post(ingredientController.saveIngredient);
 
       ingredientRouter.route('/deleteIngredient')
-      .get(ingredientController.deleteIngredient);
+      .post(ingredientController.deleteIngredient);
+      ingredientRouter.route('/editIngredient')
+      .get(ingredientController.editIngredient);
   return ingredientRouter;
 }
 
