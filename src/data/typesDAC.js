@@ -3,13 +3,19 @@ const mongodb = mongo.MongoClient;
 const url = 'mongodb://localhost:27017/tempDatabase';
 
 const typesDAC =  () => {
-    const getCategories = (callback) =>{
+    const getCategories = (autoOrder, callback) =>{
         mongodb.connect(url, (err, db) => { 
             const categoryCollection = db.collection('categories');
-            categoryCollection.find({}).toArray(  (err, data) => {
-              callback(data);
+            if (autoOrder) {
+                categoryCollection.find({autoOrder: 'yes'}).toArray(  (err, data) => {
+                    callback(data);
+                });
+            } else {
+              categoryCollection.find({}).toArray(  (err, data) => {
+                callback(data);
             });
-        });
+        }
+    });
     }
     const createCategory = (category, callback) => {
         mongodb.connect(url, (err, db) => { 
@@ -22,9 +28,35 @@ const typesDAC =  () => {
     const addCategories = (categories, callback) => {
         mongodb.connect(url, (err, db) => { 
             const categoryCollection = db.collection('categories');
-            categoryCollection.insertMany(categories,  (err, data) => {
-              callback(data);
-            });
+            // dont want to insert dups
+            let nameList = [];
+            for (let category of categories) {
+                nameList.push(category.name);
+            }
+            categoryCollection.find({name: {$exists:true, $in:nameList}}).
+                toArray ( (err, results) =>{
+                    for (let item of results) {
+                        let index = nameList.indexOf(item.name);
+                        if (index > -1) {
+                            nameList.splice(index, 1);
+                        }
+                    }
+                    let insertList = [];
+                    for (let item of categories) {
+                        if (nameList.indexOf(item.name) > -1) {
+                            insertList.push(item);
+                        }
+                    }
+                    if (insertList.length > 0) {
+                        categoryCollection.insertMany(insertList,  (err, data) => {
+                            callback(data);
+                        });
+    
+                    } else {
+                        callback(null);;
+                        
+                    }
+                });
         });
     }
     const deleteCategory = (category, callback) => {

@@ -22,7 +22,6 @@ var recipeDAC = () => {
         const ingredientCollection = db.collection('directions');
         let query = { recipe: recipeName, stepNumber:stepNumber  };
         ingredientCollection.find(query).toArray((err, results) =>{
-          console.log(results);
           callback(results);
         });
       });
@@ -149,13 +148,42 @@ var recipeDAC = () => {
         );
       });
     }
-    const addIngredientsToRecipes = (ingredient, callback) => {
+    const addIngredientsToRecipes = (ingredients, callback) => {
       mongodb.connect(url, (err, db) => {
+            // dont want to insert dups
+            let nameList = [];
+            console.log(ingredients);
+            for (let ingredient of ingredients) {
+                nameList.push(ingredient.ingredient);
+            }
+            console.log(nameList);
         const ingredientCollection = db.collection('recipeIngredients');
-        ingredientCollection.insertMany(ingredient,  (err, data) => { 
-            callback(data);
-          }
-        );
+        ingredientCollection.find({ingredient: {$exists:true, $in:nameList}}).
+            toArray((err, results)=> {
+              console.log(results);
+              for (let item of results) {
+                let index = nameList.indexOf(item.ingredient);
+                if (index > -1) {
+                    nameList.splice(index, 1);
+                }
+            }
+            console.log('new namelist');
+            console.log(nameList);
+            let insertList = [];
+            for (let item of ingredients) {
+                if (nameList.indexOf(item.ingredient) > -1) {
+                    insertList.push({recipe: item.recipeName, ingredient: item.ingredient,
+                      quantity: item.quantity, unit: item.unit});
+                }
+            }
+            console.log('insert list');
+            console.log(insertList);
+
+
+            ingredientCollection.insertMany(ingredients,  (err, data) => { 
+                callback(data);
+              });
+                })
       });
     }
     const deleteIngredientFromRecipe =  (ingredient, callback) => {

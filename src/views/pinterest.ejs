@@ -11,6 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
   <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.css" />
+  <script src="/lib/jquery/dist/jquery.js"></script>
   <!--[if lt IE 9]>
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
@@ -80,13 +81,13 @@
       <option value="<%=pin.id%>"><%=pin.name%></option>
       <% } %>
     </select>
-    <button type="submit" class="btn-primary btn">find Pin</button>
+    <button type="submit" class="btn-primary btn" >find Pin</button>
   </form>
 </div>
 <div class="col-md-6">
 <form name="boardForm" action="/pinterest/getNewBoardData" method="post">
 <input type="text" name="boardName" placeholder="enter board name">
-<button type="submit" class="btn-primary btn">get board data</button>
+<button type="submit" class="btn-primary btn" >get board data</button>
 </form>
 </div>
   </div>
@@ -102,8 +103,10 @@
     <image src="<%=recipe.recipeImage%>"/>
     </div>
     <div class="col-md-9 well">
-      <div class="center"> 
-      <%=recipe.description%></br>
+    <form action="/pinterest/addData?id=<%=id%>" method="POST">
+    <div class="center"> 
+        <input type="text" name="newName" class="form-control" value="<%=recipe.name%>"></br>
+        <%=recipe.description%></br>
       </div>
       <% if (!recipe.name) {%>
       <% } else if (recipeIngredients.length == 0) { %>
@@ -114,9 +117,7 @@
           <span class="big blue">RecipeIngredients</span>
           </div>
           <div class="col-md-2">
-          <form action="/pinterest/addData?id=<%=id%>" method="POST">
           <button class="btn btn-primary" type="submit" >Add data</button>
-          </form>
           </div>
         </div>
       <%} %>
@@ -135,6 +136,7 @@
       <% for (category of categories) {%>
       <%=category.name %><br/>
       <% } %>
+      </form>
     </div>
   </div>
 </div>
@@ -147,7 +149,6 @@
     </div>
   </footer>
   <!-- script references -->
-  <script src="/lib/jquery/dist/jquery.js"></script>
   <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
   <script src="bundle.js"></script>
 </body>

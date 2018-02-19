@@ -50,21 +50,20 @@ const pinterestController = (nav) => {
         data.id = id;
         data.boardName = boardName;
         pinterestAPI.getDataForPins(id, function (pins) {
-            data = getData(id, pins);
+            data = getData(null, id, pins);
             getBoardData(boardName, (ids) => {
                 data.ids = ids;
                 render(res, data);
             })
         });
     }
-    const getData = function (id, pins)  {
-        console.log(`getData ${id}`);
+    const getData = function (name, id, pins)  {
         let data = clearData();
         data.id = id;
         const pinData = pins.data[0];
         if (pinData) {
             data.recipe = {
-                name: pinData.description, 
+                name: name || pinData.description, 
                 description: `url: ${pinData.link}`,
                 recipeImage: pinData.images["237x"].url
             };
@@ -92,10 +91,11 @@ const pinterestController = (nav) => {
     const addData = (req, res) => {
         const id = req.query.id;
         console.log(`**addData req.query.id, id: ${id}**`);
+        const recipeName = req.body.newName;
         let data = clearData();
         data.id = id;
         pinterestAPI.getDataForPins(id, function (pins) {
-            const returnedData = getData(id, pins);
+            const returnedData = getData(recipeName, id, pins);
             typesDAC.addCategories(returnedData.categories, (results) => {
                 // add ingredients
                 ingredientDAC.newIngredients(returnedData.ingredients, (results) => {

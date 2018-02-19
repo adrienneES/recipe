@@ -30,6 +30,41 @@ var shoppingDAC =  function() {
         });
     }
 
+    const insertItemsInShoppingList = (orderList, callback) => {
+        mongodb.connect(url, function (err, db) {
+            const collection = db.collection('shoppingList');
+           const nameList = [];
+            for (let item of orderList) {
+                nameList.push(item.ingredient);
+            }
+            collection.find({ingredient: {$exists:true, $in:nameList}}).toArray((err, results) => {
+                for (let name of nameList) {
+                    for (let item of results) {
+                        let index = nameList.indexOf(item.ingredient);
+                        if (index > -1) {
+                            nameList.splice(index, 1);
+                        }
+                    }
+                }
+                let insertList = [];
+                for (let item of orderList) {
+                    if (nameList.indexOf(item.ingredient) > -1) {
+                        insertList.push(item);
+                    }
+                }
+                if (insertList.length > 0) {
+                    console.log(`inserting ${insertList.length} ingredients`); 
+                    console.log(insertList);
+                    collection.insertMany(insertList, (shoppingList) => {
+                        callback(insertList);
+                    });
+                } else {
+                    callback(insertList);
+            }
+                })
+        });
+    }
+
     const findItemInShoppingList = (item, callback) => {
         mongodb.connect(url, function (err, db) { 
             const collection = db.collection('shoppingList');
@@ -52,6 +87,7 @@ var shoppingDAC =  function() {
         getShoppingList : getShoppingList,
         deleteShoppingList : deleteShoppingList,
         insertItemInShoppingList : insertItemInShoppingList,
+        insertItemsInShoppingList : insertItemsInShoppingList,
         findItemInShoppingList : findItemInShoppingList,
         deleteItemFromShoppingList : deleteItemFromShoppingList
     };

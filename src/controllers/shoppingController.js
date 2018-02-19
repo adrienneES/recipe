@@ -2,6 +2,8 @@ import express from 'express';
 const recipeDAC = require('../data/recipeDAC')();
 const shoppingDAC = require('../data/shoppingDAC')();
 const ingredientDAC = require('../data/ingredientDAC')();
+const typesDAC = require('../data/typesDAC')();
+const utility = require('../utilities/utilities')();
 
 const shoppingController = function(nav) {
 
@@ -24,8 +26,9 @@ const shoppingController = function(nav) {
             ingredientList = data;
             shoppingDAC.getShoppingList( (results) => {
                 shoppingList = results || [];
+                const message = utility.getMessage(req);
                 render(res, {view:'shopping', title:'shopping list',ingredients:ingredientList, 
-                message:{}, shoppingList: shoppingList, nav:nav})
+                message:message, shoppingList: shoppingList, nav:nav})
             })
         });
     }
@@ -63,15 +66,32 @@ const shoppingController = function(nav) {
     }
     const addToList = function (req, res) {
         const recipeName = req.query.name;
+        console.log(recipeName);
         const recipeController = require('../controllers/recipeController')(nav);
         recipeDAC.getRecipeIngredients(recipeName, function (results) {
             let ingredientArray = [];
             for(let recipeIngredient of results) {
                 ingredientArray.push(recipeIngredient.ingredient);
             }
-            console.log(ingredientArray);
-            ingredientDAC.getIngredients(ingredientArray, (results) => {
-                res.send(results);
+            ingredientDAC.getIngredientsForRecipe(ingredientArray, (ingredients) => {
+                // get categories that are on autoOrder
+                typesDAC.getCategories('yes', (categories) =>{
+                    let autoList = [];
+                    for (let category of categories) {
+                        autoList.push(category.name);
+                    }
+                    let categoryList = [];
+                    let orderList = [];
+                    for (let currentIngredient of ingredients) {
+                        if (autoList.indexOf(currentIngredient.category) != -1) {
+                            orderList.push({ingredient: currentIngredient.name, category:currentIngredient.category});
+                        } 
+                    }
+                    shoppingDAC.insertItemsInShoppingList(orderList, (results) => {
+                        req.query.succes = 'items added to shopping list';
+                        getList(req, res);
+                    })
+                } );                
             })
         });
     }

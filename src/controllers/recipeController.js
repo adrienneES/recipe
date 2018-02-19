@@ -124,7 +124,6 @@ const recipeController =  (nav) => {
     const ingredient = {recipe: recipeName, ingredient: req.body.selectedIngredient,
       quantity:req.body.quantity, unit:req.body.unit};
     console.log('adding ingredient');
-    console.log(ingredient);
     if (recipeName)  {
       recipeDAC.findIngredientInRecipe(ingredient,  (data) => {
         if (data)  {

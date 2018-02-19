@@ -110,7 +110,7 @@ const dataController = function (nav) {
     })    
   }
   const showCategories = (req, res) => {
-    typesDAC.getCategories(results => {
+    typesDAC.getCategories(null, results => {
       clearData();
       data.categories = results; 
       data.collection = 'categories';

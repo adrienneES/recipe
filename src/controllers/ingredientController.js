@@ -6,7 +6,7 @@ const ingredientController =  (nav) => {
   var getData =  (req, res) => {
 
     // get the categories 
-    typesDAC.getCategories( (results) => {
+    typesDAC.getCategories(null, (results) => {
       const categoryList = results;
       ingredientDAC.getIngredients( (results) => {
         const ingredientList = results;
@@ -24,9 +24,8 @@ const ingredientController =  (nav) => {
   }
 
   const newIngredient =  (req, res) => {
-    const staple = req.body.staple ? 'yes' : 'no';
     const ingredient = {category : req.body.ingredientCategory, 
-      name: req.body.ingredientName,staple: staple};
+      name: req.body.ingredientName};
       ingredientDAC.getIngredient(req.body.ingredientName, (results) => {
         if (results) {
           res.redirect('/ingredients?error=ingredient%20exists%20already');
@@ -47,7 +46,7 @@ const ingredientController =  (nav) => {
 
   return {
     newIngredient : newIngredient,
-    getData:getData,
+      getData:getData,
     deleteIngredient:deleteIngredient,
   };
 };

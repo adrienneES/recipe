@@ -114,15 +114,14 @@
         <div class="col-sm-3 well">
           <span class="blue big"><%=ingredient.name%></span>
           <span><%=ingredients[i].category%></span>
-          <span><%=ingredients[i].staple%></span>
         </div>
       <% }%> 
       <% for (let recipesIngredient of recipesIngredients){ %>
         <div class="col-sm-3 well well-lg tall">
-          <span ><%=recipesIngredient.recipe%></span>  
-          [<span style="color:red"><%=recipesIngredient.ingredient%></span>]
-          <span><%=recipesIngredient.quantity%></span> | 
-          <span><%=recipesIngredient.unit%></span>
+          <span style="color:red"><%=recipesIngredient.ingredient%></span>
+          <span  class="small"><%=recipesIngredient.quantity%></span> | 
+          <span  class="small"><%=recipesIngredient.unit%></span>
+          <span class="small" ><%=recipesIngredient.recipe%></span>  
           </div>
       <% }%>
       <% for (let item of shoppingList){ %>

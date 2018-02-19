@@ -75,7 +75,6 @@
     <ul class="list-unstyled">
         <form name="flipAutoOrder" action="/types/flipAutoOrder" method="post">
           <% for (category of categories) { %>
-          <%=category.autoOrder%>
             <%if (category.autoOrder == 'yes') {%>
             <li style="color:red">
             <% } else { %>

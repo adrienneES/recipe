@@ -4,7 +4,7 @@ const utility = require('../utilities/utilities')();
 const typesController = (nav) => {
     const getData =  (req, res) => {
         //get categories
-        typesDAC.getCategories((categoryList) => {
+        typesDAC.getCategories(null, (categoryList) => {
             typesDAC.getUnits((units) => {
                 const message = utility.getMessage(req);
                 res.render('types', {
