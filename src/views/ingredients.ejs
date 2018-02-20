@@ -108,7 +108,7 @@
         <h4 class="center">All Ingredients</h4>
         <div class="row" >
           <% for ( ingredient of ingredients) { %>
-          <div class="col-md-3 well tall" display="inline-block" onclick="window.location.href='/ingredients/editIngredient?ingredientName=<%=ingredient.name %>'">
+          <div class="col-md-4 well " style="min-height: 90px; border:1px red solid; padding-top:0px; padding-bottom:0px" display="inline-block" onclick="window.location.href='/ingredients/editIngredient?ingredientName=<%=ingredient.name %>'">
             <form name="deleteIngredient" action="/ingredients/deleteIngredient" method="post">
               <div class="row">
                 <div class="col-12">
@@ -118,7 +118,13 @@
                 </div>
               </div>
             </form>
-          </div>
+<!--            <select class="form-control" name="sometext" size="5">
+            <% let recipeList = ['cod', 'soup'];
+            for (let recipe of recipeList) {%>
+            <option><%=recipe%></option>
+            <% } %>
+          </select> -->
+    </div>
         <% }%>
       </div>
     </div>

@@ -5,9 +5,8 @@ const ingredientController =  (nav) => {
 
   var getData =  (req, res) => {
     const ingredientName = req.body.ingredientName || req.query.ingredientName
-    console.log(ingredientName);
+    console.log('ingredient contorller: getData');
     ingredientDAC.getIngredient(ingredientName, (ingredientData) => { 
-      console.log(ingredientData);
       let ingredient = {};
       if (ingredientData) {
         ingredient.name = ingredientData.name, 
@@ -17,6 +16,8 @@ const ingredientController =  (nav) => {
       typesDAC.getCategories(null, (results) => {
         const categoryList = results;
         ingredientDAC.getIngredients(null, (results) => {
+          console.log(results);
+          // for each ingredient, find which recipe
           const ingredientList = results;
           const utility = require('../utilities/utilities')();
           const message = utility.getMessage(req);
@@ -39,11 +40,11 @@ const ingredientController =  (nav) => {
       ingredientDAC.getIngredient(req.body.ingredientName, (results) => {
         if (results) {
           // want to update it
-          ingredientDAC.updateIngredient(ingredient, (results) => {
+          ingredientDAC.updateIngredient(ingredient, () => {
             res.redirect('/ingredients?success=updated');
           });
         } else {
-          ingredientDAC.saveIngredient(ingredient, (results) => {
+          ingredientDAC.saveIngredient(ingredient, () => {
                 res.redirect('/ingredients?success=added');
               });
         }

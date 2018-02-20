@@ -5,6 +5,7 @@ const router = function () {
   authRouter.route('/signup')
     .post(function (req, res) {
       console.log(req.body);
+      res.send('hi');
     })
   return authRouter;
 }

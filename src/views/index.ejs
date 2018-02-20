@@ -79,7 +79,7 @@
   <div class="row">
   <% for (let recipe of  recipes) { %>
     <div class="well col-md-3" style="border:1px black solid">
-      <div class="row" onclick="alert('going');window.location.href='/recipes/recipeDetail/<%=recipe.name %>'">
+      <div class="row" onclick="window.location.href='/recipes/recipeDetail/<%=recipe.name %>'">
         <div class="col-md-5">
           <div class="bottom-pad"  style="width:100px;height:100px; background-color:lightgrey" display="inline-block">
             <img src="<%=recipe.recipeImage%>" width="100px" height="100px"/>
@@ -95,7 +95,7 @@
           </small>
           </div>
       </div>
-      <div class="row" onclick="alert('adding');window.location.href='/shopping/addToList?name=<%=recipe.name %>'" >
+      <div class="row" onclick="window.location.href='/shopping/addToList?name=<%=recipe.name %>'" >
         <div class="col">
         <small >
         <%=recipe.description %>

@@ -1,4 +1,3 @@
-import express from 'express';
 const recipeDAC = require('../data/recipeDAC')();
 const shoppingDAC = require('../data/shoppingDAC')();
 const ingredientDAC = require('../data/ingredientDAC')();
@@ -23,7 +22,6 @@ const shoppingController = function(nav) {
 
     const getList = function (req, res) {
         let categoryFilter = req.body.categoryFilter;
-        const ingredientController = require('../controllers/ingredientController')(nav);
         ingredientDAC.getIngredients(categoryFilter,function (data) {
             ingredientList = data;
             shoppingDAC.getShoppingList( (results) => {
@@ -48,7 +46,7 @@ const shoppingController = function(nav) {
                 render(res, {view:'shopping', title:'shopping list',ingredients:ingredientList, categories: categories,
                 message:{type:'error', message: 'already there'}, shoppingList: shoppingList, nav:nav})
             } else {
-                shoppingDAC.insertItemInShoppingList(item, (results) => {
+                shoppingDAC.insertItemInShoppingList(item, () => {
                     // get update shopping list
                     shoppingDAC.getShoppingList((results) => {
                         shoppingList = results || [];
@@ -75,7 +73,6 @@ const shoppingController = function(nav) {
     const addToList = function (req, res) {
         const recipeName = req.query.name;
         console.log(recipeName);
-        const recipeController = require('../controllers/recipeController')(nav);
         recipeDAC.getRecipeIngredients(recipeName, function (results) {
             let ingredientArray = [];
             for(let recipeIngredient of results) {
@@ -88,14 +85,13 @@ const shoppingController = function(nav) {
                     for (let category of categories) {
                         autoList.push(category.name);
                     }
-                    let categoryList = [];
                     let orderList = [];
                     for (let currentIngredient of ingredients) {
                         if (autoList.indexOf(currentIngredient.category) != -1) {
                             orderList.push({ingredient: currentIngredient.name, category:currentIngredient.category});
                         } 
                     }
-                    shoppingDAC.insertItemsInShoppingList(orderList, (results) => {
+                    shoppingDAC.insertItemsInShoppingList(orderList, () => {
                         req.query.succes = 'items added to shopping list';
                         getList(req, res);
                     })

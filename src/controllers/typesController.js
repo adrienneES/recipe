@@ -6,7 +6,6 @@ const typesController = (nav) => {
         //get categories
         typesDAC.getCategories(null, (categoryList) => {
             typesDAC.getUnits((units) => {
-                const message = utility.getMessage(req);
                 res.render('types', {
                     title: 'types',
                     message: utility.getMessage(req),
@@ -23,7 +22,7 @@ const typesController = (nav) => {
         const autoOrder = req.body.autoOrder == 'on' ? 'yes' : 'no';
         const category = {name: req.body.categoryName.toUpperCase(), autoOrder: autoOrder};
         console.log(category);
-        typesDAC.createCategory(category, (results) => {
+        typesDAC.createCategory(category, () => {
             res.redirect('/types');
         });
     }
@@ -47,13 +46,13 @@ const typesController = (nav) => {
             category.autoOrder = autoOrder;
             console.log('flipping');
             console.log(category);
-            typesDAC.flipAutoOrder(category, (results)=>{ 
+            typesDAC.flipAutoOrder(category, ()=>{ 
                 res.redirect('/types');
             });
         } else {
             console.log('deleting');
             const c= {name: categoryArray[0]};
-            typesDAC.deleteCategory(c, (results)=>{
+            typesDAC.deleteCategory(c, ()=>{
                 res.redirect('/types');
             });
         }
@@ -62,14 +61,14 @@ const typesController = (nav) => {
         const deleteUnit =  (req, res) => {
         const unit = req.body.unitName;
         console.log('unit:' + unit);
-        typesDAC.deleteUnit(unit, (results) => {
+        typesDAC.deleteUnit(unit, () => {
             res.redirect('/types');
         });
     }
 
     const newUnit =  (req, res) => {
         const unit = {name: req.body.unitName.toLowerCase()};
-        typesDAC.createUnit(unit, (results) => {
+        typesDAC.createUnit(unit, () => {
             res.redirect('/types');
         });
     }

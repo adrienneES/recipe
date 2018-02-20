@@ -81,7 +81,7 @@ const pinterestController = (nav) => {
                             };
                             data.ingredients.push({name: ingredient.name, category: categoryName});
                             data.recipeIngredients.push(recipeIngredient);
-                        };
+                        }
                     }
                 }
             }
@@ -89,6 +89,14 @@ const pinterestController = (nav) => {
         return data;
     };
     const addData = (req, res) => {
+        // if this recipe already exists, don't readd
+        console.log(`looking at ${req.body.newName}`);
+        recipeDAC.getRecipeByName(req.body.newName, (results)=> {
+            if (results) {
+                req.query.error = `Recipe ${req.body.newName} existed already and can't be added again`;
+                getPins(req, res);
+                return;
+            }
         const id = req.query.id;
         console.log(`**addData req.query.id, id: ${id}**`);
         const recipeName = req.body.newName;
@@ -96,12 +104,12 @@ const pinterestController = (nav) => {
         data.id = id;
         pinterestAPI.getDataForPins(id, function (pins) {
             const returnedData = getData(recipeName, id, pins);
-            typesDAC.addCategories(returnedData.categories, (results) => {
+            typesDAC.addCategories(returnedData.categories, () => {
                 // add ingredients
-                ingredientDAC.saveIngredients(returnedData.ingredients, (results) => {
+                ingredientDAC.saveIngredients(returnedData.ingredients, () => {
                     // add recipe ingredients
-                    recipeDAC.addIngredientsToRecipes(returnedData.recipeIngredients, (results) => {
-                        recipeDAC.insertNewRecipe(returnedData.recipe, (results) => {
+                    recipeDAC.addIngredientsToRecipes(returnedData.recipeIngredients, () => {
+                        recipeDAC.insertNewRecipe(returnedData.recipe, () => {
                             req.query.success = `Recipe ${returnedData.recipe.name} added`;
                             getPins(req, res);
                         })
@@ -109,7 +117,8 @@ const pinterestController = (nav) => {
                 })
             });
         });
-    }
+    }); 
+}
     const getBoardData = (boardName, callback) => {
         console.log(`getBoardData`);
         pinterest.getPinsFromBoard(boardName, true, function (pins) {

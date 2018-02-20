@@ -53,7 +53,7 @@ const typesDAC =  () => {
                         });
     
                     } else {
-                        callback(null);;
+                        callback(null);
                         
                     }
                 });

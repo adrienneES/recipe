@@ -1,11 +1,8 @@
 import express from 'express';
-import path  from 'path';
 import open  from 'open';
 import webpack from 'webpack';
 import config from '../webpack.config.dev';
 import bodyParser from 'body-parser'; 
-// import
-//var pinterestAPI = require('pinterest-api');
 
 /* eslint-disable no-console */
 
@@ -82,26 +79,5 @@ var data = {
 mailgun.messages().send(data, function (error, body) {
 
   console.log(body);
-});
-*/
-/*
-app.get('/', function (req, res) {
-  // Create a new object and set the accountname
-var pinterest = pinterestAPI('adricurtis');
-var pinData;
-// Get pins from a board (second parameter determines whether you want the results paginated and to include some metadata)
-//pinterest.getPinsFromBoard('dinner', true, function (pins) {
-//  pinData = pins;
-//  console.log(pins.data);
-//  console.log(pins.data.length);
-//  res.send(pins.data);
-//});
-// Get data for pins (note that this is a static method (a method of the class itself) since it does not rely on any state)
-//pinterestAPI.getDataForPins(['833658580996442219'], function (data) {
-//  res.send(data);
-//  console.log(data);
-//});//
-//res.send(pinData);
-  res.sendFile(path.join(__dirname, '../src/views/index.html'));
 });
 */

@@ -1,7 +1,6 @@
 import mongo from 'mongodb';
 const mongodb = mongo.MongoClient;
 const url = 'mongodb://localhost:27017/tempDatabase';
-const typesDAC = require('../data/typesDAC')();
 const recipeDAC = require('../data/recipeDAC')();
 
 var ingredientDAC =  () =>{
@@ -61,6 +60,7 @@ var ingredientDAC =  () =>{
         });
     }
     const saveIngredients = (ingredients, callback)=> {
+        console.log('ingredientDAC:saveIngredienst');
         mongodb.connect(url, (err, db) => { 
             // dont want to insert dups
             let nameList = [];
@@ -70,6 +70,9 @@ var ingredientDAC =  () =>{
             const ingredientCollection = db.collection('ingredients');
             ingredientCollection.find({name: {$exists:true, $in:nameList}}).
                 toArray((err, results) => {
+  //                  results.forEach((o)=> {
+//                        console.log(o);
+    //                })
                     for (let item of results) {
                         let index = nameList.indexOf(item.name);
                         if (index > -1) {
@@ -97,7 +100,6 @@ var ingredientDAC =  () =>{
         // don't delete if its part of a recipe - maybe throw an exception
         console.log(ingredient);
         mongodb.connect(url,(err, db) => { 
-            const recipeCollection = db.collection('recipeIngredients');
             recipeDAC.ingredientInUse(ingredient, (results)=> {
                 if (results) {
                     console.log('found a results cant delete');

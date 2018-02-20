@@ -19,8 +19,6 @@ const dataController = function (nav) {
       units: data.units,
       nav: data.nav});
     }
-  const ingredientController = require('../controllers/ingredientController')(nav);
-  const recipeController = require('../controllers/recipeController')(nav);
 
   const getData = function(req, res) {
     render(res, data);
@@ -32,7 +30,7 @@ const dataController = function (nav) {
   }
   const showRecipes = function(req, res) {
     recipeDAC.getRecipeData(function (results) {
-      clearData();
+      let data = clearData();
       data.recipes = results;
       data.collection = 'Recipes';
       render(res, data);
@@ -40,86 +38,93 @@ const dataController = function (nav) {
   }
   const deleteRecipes = function (req, res) {
     console.log(`deleting recipes`)
-    recipeDAC.deleteAllRecipes(function (results) { 
-      render(res, clearData());
+    recipeDAC.deleteAllRecipes(function () { 
+      let data = clearData();
+      render(res, data);
     });
   }
   const showRecipeIngredients = function (req, res) {
     recipeDAC.getAllRecipeIngredients(function(results) {
-      clearData();
+      let data = clearData();
       data.collection = 'Recipe Ingredeients';
       data.recipeIngredients = results;
       render(res, data);
     })
   }
-  const deleteRecipeIngredients = function(recipe, req, res) {
-    recipeDAC.deleteRecipeIngredients(null,(results)=> {
-      render(res, clearData());
+  const deleteRecipeIngredients = function(req, res, recipe) {
+    recipeDAC.deleteRecipeIngredients(recipe, ()=> {
+      let data = clearData();
+      render(res, data);
     })
   }
   const showIngredients = function(req, res) {
     ingredientDAC.getIngredients(null, (results) =>{
-      clearData();
+      let data = clearData();
       data.ingredients = results
       data.collection = 'Ingredients';
       render(res, data);
     });
   }
   const deleteIngredients = function(req, res) {
-    ingredientDAC.deleteIngredients((results) =>{
-      render(res, clearData());
+    ingredientDAC.deleteIngredients(() =>{
+      let data = clearData();
+      render(res, data);
     });
   }
   const showShoppingList = function (req, res) {
     shoppingDAC.getShoppingList((results) => {
-      clearData();
+      let data = clearData();
       data.shoppingList = results;
       data.collection = 'ShoppingList';
       render(res, data);
     });
   }
   const deleteShoppingList = function (req, res) {
-    shoppingDAC.deleteShoppingList((results) => {
-      render(res, clearData());
+    shoppingDAC.deleteShoppingList(() => {
+      let data = clearData();
+      render(res, data);
     })
   }
   const showDirections = function(req, res) {
     recipeDAC.getAllDirections(results => {
-      clearData();
+      let data = clearData();
       data.directions = results; 
       data.collection = 'directions';
       render(res, data);
     });
   }
   const deleteDirections = function (req, res) {
-    recipeDAC.deleteDirections(null, results=> {
-      render(res, clearData());
+    recipeDAC.deleteDirections(null, ()=> {
+      let data = clearData();
+      render(res, data);
     })    
   }
   const showUnits = (req, res) => {
     typesDAC.getUnits(results => {
-      clearData();
+      let data = clearData();
       data.units = results; 
       data.collection = 'units';
       render(res, data);
     });
   }
   const deleteUnits = function (req, res) {
-    typesDAC.deleteUnits(results=> {
-      render(res, clearData());
+    typesDAC.deleteUnits( () => {
+      let data = clearData();
+      render(res, data);
     })    
   }
   const showCategories = (req, res) => {
     typesDAC.getCategories(null, results => {
-      clearData();
+      let data = clearData();
       data.categories = results; 
       data.collection = 'categories';
       render(res, data);
     });
   }
   const deleteCategories = function (req, res) {
-    typesDAC.deleteCategories(results=> {
-      render(res, clearData());
+    typesDAC.deleteCategories( ()=> {
+      let data = clearData();
+      render(res, data);
     })    
   }
   return {
@@ -129,7 +134,6 @@ const dataController = function (nav) {
         deleteRecipeIngredients:deleteRecipeIngredients,
         deleteRecipes:deleteRecipes,
         showIngredients: showIngredients,
-        deleteRecipes:deleteRecipes,
         deleteIngredients:deleteIngredients,
         showShoppingList: showShoppingList,
         deleteShoppingList:deleteShoppingList,

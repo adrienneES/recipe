@@ -5,7 +5,6 @@ const ingredientDAC = require('../data/ingredientDAC')();
 const typesDAC = require('../data/typesDAC')();
 
 const recipeController =  (nav) => {
-  const ingredientController = require('../controllers/ingredientController')(nav);
 
   const render =  (res, data) => {
     data.view = data.view ? data.view : 'Index';
@@ -37,11 +36,11 @@ const recipeController =  (nav) => {
     recipeDAC.getRecipeByName(recipeName, (data) => {
       if (data)  {
         console.log(`updaing ${recipeName}`);
-        recipeDAC.updateRecipe({name: recipeName},recipe, (results) => {
+        recipeDAC.updateRecipe({name: recipeName},recipe, () => {
           res.redirect('/recipes/recipeDetail/' + recipeName + '?success=inserted%20successfully');
         });
       } else {
-        recipeDAC.insertNewRecipe(recipe, (results) => {
+        recipeDAC.insertNewRecipe(recipe, () => {
           req.query.name = recipeName;
           req.query.success = 'recipe inserted successfully';
           getRecipe(req, res);
@@ -52,7 +51,7 @@ const recipeController =  (nav) => {
   const deleteRecipes =  (req, res) => {
     const recipeName = req.query.name;
     console.log(`deleting recipe: ${recipeName}`)
-    recipeDAC.deleteRecipe(recipeName, (results) => {
+    recipeDAC.deleteRecipe(recipeName, () => {
       req.query.success = 'recipe successfully deleted';
       newRecipe(req, res);
     })
@@ -61,7 +60,6 @@ const recipeController =  (nav) => {
     let recipe = {};
     const message = utility.getMessage(req);
       ingredientDAC.getIngredients(null,(results) => {
-        const ingredients = results || [];
         // now get units 
         typesDAC.getUnits((units) => {
           units = units || [];
@@ -88,7 +86,7 @@ const recipeController =  (nav) => {
               directions = directions || [];
               const data= {view:'recipeDetail', title: 'Recipes', message: message, directions:directions,
                 ingredients:ingredients, units: units, recipeIngredients:recipeIngredients, recipe:recipe,
-                recipe:recipe, nav:nav}
+                nav:nav}
                 render(res, data);
             })
           });
@@ -103,7 +101,7 @@ const recipeController =  (nav) => {
       if (results.length)  {
         res.redirect('/recipes/recipeDetail/'+direction.recipe+'?error=step%20exists%20for%20directions');
       } else {
-        recipeDAC.addDirectionToRecipe(direction, (results) => {
+        recipeDAC.addDirectionToRecipe(direction, () => {
           console.log(`added ${req.body.direction} #${req.body.stepNumber} to ${req.query.name}`);
           getRecipe(req, res);
         })
@@ -114,7 +112,7 @@ const recipeController =  (nav) => {
     let queryArray = req.query.name.split('.');
     const direction = {recipeName: queryArray[0], stepNumber:queryArray[1] };
     // if this step exists for recipe, do not add
-    recipeDAC.deleteDirectionFromRecipe(req, res, direction, (results) => {
+    recipeDAC.deleteDirectionFromRecipe(req, res, direction, () => {
       res.redirect('/recipes/recipeDetail/'+ queryArray[0]+ '?success=deleted');
     })
   }
@@ -144,7 +142,7 @@ const recipeController =  (nav) => {
   const removeIngredient = (req, res) => {
     const recipeIngredient = {recipe:req.query.name,ingredient:req.body.recipeIngredient};
     console.log(req.body);
-    recipeDAC.deleteIngredientFromRecipe(recipeIngredient, (results) => {
+    recipeDAC.deleteIngredientFromRecipe(recipeIngredient, () => {
       res.redirect('/recipes/recipeDetail/'+ req.query.name + '?success=deleted');
     })
   }

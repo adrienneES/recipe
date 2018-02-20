@@ -44,7 +44,6 @@ var recipeDAC = () => {
     }
 
     const deleteDirections =  (recipe, callback) => {
-      console.log(recipe);
       mongodb.connect(url, (err, db) => { 
         const directionCollection = db.collection('directions');
         if (recipe) {
@@ -107,9 +106,13 @@ var recipeDAC = () => {
     const deleteRecipe =  (recipeName, callback) => {
       mongodb.connect(url,  (err, db) => { 
         const collection = db.collection('recipes');
-        collection.remove(recipeName? {name:recipeName} : {},  (err, results) => { 
+        collection.remove(recipeName? {name:recipeName} : {},  (err) => { 
+          if (err) {
+            callback(err);
+            return;
+          }
           // also have to remove directions and recipe ingredients
-          deleteDirections(recipeName, (results) => {
+          deleteDirections(recipeName, () => {
             deleteRecipeIngredients(recipeName, (results) =>{
               callback(results);
             })
@@ -128,8 +131,7 @@ var recipeDAC = () => {
     const getAllRecipeIngredients = (callback) => {
       mongodb.connect(url, (err, db) => { 
         const ingredientCollection = db.collection('recipeIngredients');
-        ingredientCollection.find({}).order({ingredient: 1}).toArray((err, results) => {
-          console.log(results);
+        ingredientCollection.find({}).sort({ingredient: 1}).toArray((err, results) => {
           callback(results);
         });
       });
@@ -173,11 +175,19 @@ var recipeDAC = () => {
     }
     const addIngredientsToRecipes = (ingredients, callback) => {
       mongodb.connect(url, (err, db) => {
-            // dont want to insert dups
-            let nameList = [];
-            for (let ingredient of ingredients) {
-                nameList.push(ingredient.ingredient);
-            }
+        // dont want to insert dups
+        let nameList = [];
+        for (let ingredient of ingredients) {
+          if (nameList.indexOf(ingredient.ingredient) == -1) {
+            nameList.push(ingredient.ingredient);
+          }
+        }
+        let unitList = [];
+        for (let ingredient of ingredients) {
+          if (ingredient.unit && (unitList.indexOf(ingredient.unit) == -1)) {
+            unitList.push(ingredient.unit);
+          }
+        }
         const ingredientCollection = db.collection('recipeIngredients');
         ingredientCollection.find({ingredient: {$exists:true, $in:nameList}}).
             toArray((err, results)=> {
@@ -195,10 +205,34 @@ var recipeDAC = () => {
                 }
             }
             ingredientCollection.insertMany(ingredients,  (err, data) => { 
-                callback(data);
-              });
-                })
-      });
+              const unitCollection = db.collection('units');
+              unitCollection.find({}).toArray((err, results) => {
+                for (let unit of results) {
+                  let index = unitList.indexOf(unit.name);
+                  if (index != -1) {
+                    unitList.splice(index, 1);
+                  }
+                }
+                insertList = [];
+                for (let unit of unitList) {
+                  insertList.push({name:unit});
+                }
+                if (insertList.length > 0) {
+                  unitCollection.insertMany(insertList, (err) => {
+                    if (err) 
+                    {
+                      callback(err);
+                      return;
+                    }
+                    callback(data);
+                  })
+                  } else  {
+                    callback(data);
+                }
+              })
+            });
+          })
+        });
     }
     const deleteIngredientFromRecipe =  (ingredient, callback) => {
       mongodb.connect(url, (err, db) => { 

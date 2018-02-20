@@ -68,14 +68,14 @@
     </div>
     <div class="row" >
       <% for (let recipe of recipes) { %>
-        <div class="well col-md-3" style="border:red 1px solid" >
+        <div class="well col-md-3"  >
           <div class="row" onclick="window.location.href='/recipes/recipeDetail/<%=recipe.name %>'">
             <div class="col-md-5">
               <div class="bottom-pad" style="width:100px;height:100px; background-color:lightgrey" display="inline-block">
                 <img src="<%=recipe.recipeImage%>" width="100px" height="100px"/>
               </div>
             </div>
-            <div class="col-md-7" style="border:red 1px solid">
+            <div class="col-md-7" >
               <h4 >
                 <%=recipe.name %>
               </h4>
