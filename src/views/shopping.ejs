@@ -61,6 +61,7 @@
         <%=message.message%>
       </div>      
     <% } %>
+    <h1>Shopping List</h1>
     <form name="deleteItem" action="/shopping/delete" method="POST">
       <%for (let item of shoppingList ){ %>
         <button class="linkButton" type="submit" name='ingredientsSelect' value='<%=item.ingredient%>'>
@@ -69,7 +70,16 @@
     </form>
   </div>
   <div class="col-md-3 well">
-  <form name="insertShopping" action="/shopping/add" method="POST">
+  <h1>All Ingedients</h1>
+  <form name="filterCategories" action="/shopping/filter" method="POST">
+    <select name="categoryFilter">
+      <% for (let category of  categories) { %>
+        <option value="<%=category.name%>" ><%=category.name%></option>
+      <%  }%>
+    </select>
+    <button type="submit">Filter</button>
+    </form>
+    <form name="insertShopping" action="/shopping/add" method="POST">
     <%for (let ingredient of ingredients) { %>
         <button class="linkButton" type="submit" name='ingredientsSelect' value='<%=ingredient.name%>.<%=ingredient.category%>'><%=ingredient.name%>(<%=ingredient.category%>)</button></br>
     <% } %>

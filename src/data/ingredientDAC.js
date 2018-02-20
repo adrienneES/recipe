@@ -2,20 +2,27 @@ import mongo from 'mongodb';
 const mongodb = mongo.MongoClient;
 const url = 'mongodb://localhost:27017/tempDatabase';
 const typesDAC = require('../data/typesDAC')();
+const recipeDAC = require('../data/recipeDAC')();
 
 var ingredientDAC =  () =>{
-    const getIngredients =  (callback) => {
+    const getIngredients =  (filter, callback) => {
         mongodb.connect(url, (err, db) => { 
             const collection = db.collection('ingredients');
-            collection.find({}).toArray((err, results) => {
-                callback(results);
-            });
+            if (filter) {
+                collection.find({category:{$in:[filter]}}).sort({name:1}).toArray((err, results) => {
+                    callback(results);
+                });
+                } else {
+                collection.find({}).sort({name:1}).toArray((err, results) => {
+                    callback(results);
+                });
+                }
         });
     }
-    const getIngredientsForRecipe =  (ingredients, callback) => {
+    const getIngredientsForRecipe =  (recipe, callback) => {
         mongodb.connect(url, (err, db) => { 
             const collection = db.collection('ingredients');
-            collection.find({name: {$in:ingredients}}).toArray((err, results) => {
+            collection.find({name: {$in:recipe}}).sort({ingredient:1}).toArray((err, results) => {
                 callback(results);
             });
     });
@@ -87,22 +94,23 @@ var ingredientDAC =  () =>{
             });
     }
     const deleteIngredient = (ingredient, callback) => {
+        // don't delete if its part of a recipe - maybe throw an exception
+        console.log(ingredient);
         mongodb.connect(url,(err, db) => { 
-            const ingredientCollection = db.collection('ingredients');
-            ingredientCollection.remove({name:ingredient}, (err, results) => {
-                callback(results);
-            });
+            const recipeCollection = db.collection('recipeIngredients');
+            recipeDAC.ingredientInUse(ingredient, (results)=> {
+                if (results) {
+                    console.log('found a results cant delete');
+                    callback(null);
+                } else {
+                    const ingredientCollection = db.collection('ingredients');
+                    ingredientCollection.remove({name:ingredient}, (err, results) => {
+                        callback(results);
+                    });
+                }
+            })
         });
     }
-    const deleteRecipeIngredients = (callback) => {
-        mongodb.connect(url,  (err, db) => {
-          const collection = db.collection('recipeIngredients');
-          collection.remove({}, (err, results) => {
-              callback(results);
-          } );
-        });
-    }
-              
     return {
         getIngredients : getIngredients, 
         getIngredientsForRecipe : getIngredientsForRecipe,
@@ -111,8 +119,7 @@ var ingredientDAC =  () =>{
         updateIngredient : updateIngredient,
         saveIngredients : saveIngredients,
         getIngredient : getIngredient,
-        deleteIngredient : deleteIngredient,
-        deleteRecipeIngredients : deleteRecipeIngredients
+        deleteIngredient : deleteIngredient
     };
 }
 module.exports = ingredientDAC;

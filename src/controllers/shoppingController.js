@@ -14,6 +14,7 @@ const shoppingController = function(nav) {
         res.render(data.view, {
             title: data.title,
             message: data.message,
+            categories:data.categories,
             shoppingList: data.shoppingList,
             ingredients: data.ingredients,
             nav: data.nav
@@ -21,14 +22,17 @@ const shoppingController = function(nav) {
     }
 
     const getList = function (req, res) {
+        let categoryFilter = req.body.categoryFilter;
         const ingredientController = require('../controllers/ingredientController')(nav);
-        ingredientDAC.getIngredients(function (data) {
+        ingredientDAC.getIngredients(categoryFilter,function (data) {
             ingredientList = data;
             shoppingDAC.getShoppingList( (results) => {
                 shoppingList = results || [];
                 const message = utility.getMessage(req);
-                render(res, {view:'shopping', title:'shopping list',ingredients:ingredientList, 
-                message:message, shoppingList: shoppingList, nav:nav})
+                typesDAC.getCategories(null, (categories) => {
+                    render(res, {view:'shopping', title:'shopping list',ingredients:ingredientList, categories: categories,
+                    message:message, shoppingList: shoppingList, nav:nav})
+                })
             })
         });
     }
@@ -36,22 +40,24 @@ const shoppingController = function(nav) {
         const insertedItem = req.body.ingredientsSelect;
         let queryArray = insertedItem.split('.');
         const item = {ingredient: queryArray[0], category : queryArray[1]};
+        typesDAC.getCategories(null, (categories) => {
         // if its in the collection don't add
         shoppingDAC.findItemInShoppingList(item, (results) => {
             if (results) {
                 console.log(`found ${insertedItem} not inserting'`);
-                render(res, {view:'shopping', title:'shopping list',ingredients:ingredientList, 
+                render(res, {view:'shopping', title:'shopping list',ingredients:ingredientList, categories: categories,
                 message:{type:'error', message: 'already there'}, shoppingList: shoppingList, nav:nav})
             } else {
                 shoppingDAC.insertItemInShoppingList(item, (results) => {
                     // get update shopping list
                     shoppingDAC.getShoppingList((results) => {
                         shoppingList = results || [];
-                        render(res, {view:'shopping', title:'shopping list',ingredients:ingredientList, 
+                        render(res, {view:'shopping', title:'shopping list',ingredients:ingredientList, categories: categories,
                             message:{type:'success', message: 'inserted successfuly'}, shoppingList: shoppingList, nav:nav})
                         });
                 })
             }
+        })
         })
     }
     const deleteItemFromShoppingList = function (req, res) {
@@ -60,8 +66,10 @@ const shoppingController = function(nav) {
         // if its in the collection don't add
         shoppingDAC.deleteItemFromShoppingList(item, (results) => {
             shoppingList = results;
-            render(res, {view:'shopping', title:'shopping list',ingredients:ingredientList, 
-            message:{type:'success', message: 'item deleted successfully'}, shoppingList: shoppingList, nav:nav})
+            typesDAC.getCategories(null, (categories) => {
+                render(res, {view:'shopping', title:'shopping list',ingredients:ingredientList, categories: categories,
+                message:{type:'success', message: 'item deleted successfully'}, shoppingList: shoppingList, nav:nav})
+                })
         })
     }
     const addToList = function (req, res) {
@@ -95,11 +103,15 @@ const shoppingController = function(nav) {
             })
         });
     }
+    const filterIngredients = (req, res) => {
+        getList(req, res);
+    }
 
     return {
         getList:getList,
         insertItemInShoppingList:insertItemInShoppingList,
         deleteItemFromShoppingList : deleteItemFromShoppingList,
+        filterIngredients: filterIngredients,
         addToList : addToList
     }
 };

@@ -60,7 +60,7 @@ const recipeController =  (nav) => {
   const newRecipe =  (req, res) => {
     let recipe = {};
     const message = utility.getMessage(req);
-      ingredientDAC.getIngredients((results) => {
+      ingredientDAC.getIngredients(null,(results) => {
         const ingredients = results || [];
         // now get units 
         typesDAC.getUnits((units) => {
@@ -77,7 +77,7 @@ const recipeController =  (nav) => {
     const message = utility.getMessage(req);
     recipeDAC.getRecipeByName(recipeName, (recipe) => {
       if (!recipe) {recipe = {};}
-      ingredientDAC.getIngredients((ingredients) => {
+      ingredientDAC.getIngredients(null,(ingredients) => {
         ingredients = ingredients || null;
         // now get units
         typesDAC.getUnits((units) => {

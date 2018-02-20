@@ -52,13 +52,13 @@ const dataController = function (nav) {
       render(res, data);
     })
   }
-  const deleteRecipeIngredients = function(req, res) {
-    ingredientDAC.deleteRecipeIngredients((results)=> {
+  const deleteRecipeIngredients = function(recipe, req, res) {
+    recipeDAC.deleteRecipeIngredients(null,(results)=> {
       render(res, clearData());
     })
   }
   const showIngredients = function(req, res) {
-    ingredientDAC.getIngredients((results) =>{
+    ingredientDAC.getIngredients(null, (results) =>{
       clearData();
       data.ingredients = results
       data.collection = 'Ingredients';
@@ -92,7 +92,7 @@ const dataController = function (nav) {
     });
   }
   const deleteDirections = function (req, res) {
-    recipeDAC.deleteDirections(results=> {
+    recipeDAC.deleteDirections(null, results=> {
       render(res, clearData());
     })    
   }
@@ -105,7 +105,7 @@ const dataController = function (nav) {
     });
   }
   const deleteUnits = function (req, res) {
-    typesDAC.deleteDirections(results=> {
+    typesDAC.deleteUnits(results=> {
       render(res, clearData());
     })    
   }

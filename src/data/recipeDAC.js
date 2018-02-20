@@ -43,12 +43,19 @@ var recipeDAC = () => {
       });
     }
 
-    const deleteDirections =  (callback) => {
+    const deleteDirections =  (recipe, callback) => {
+      console.log(recipe);
       mongodb.connect(url, (err, db) => { 
         const directionCollection = db.collection('directions');
-        directionCollection.remove({},  (err, results) => { 
+        if (recipe) {
+          directionCollection.remove({recipe:{$in:[recipe]}},(err, results) => { 
             callback(results);
         } );
+        } else {
+          directionCollection.remove({},  (err, results) => { 
+            callback(results);
+        } );
+        }
       });
     }
   
@@ -101,7 +108,12 @@ var recipeDAC = () => {
       mongodb.connect(url,  (err, db) => { 
         const collection = db.collection('recipes');
         collection.remove(recipeName? {name:recipeName} : {},  (err, results) => { 
-          callback(results);
+          // also have to remove directions and recipe ingredients
+          deleteDirections(recipeName, (results) => {
+            deleteRecipeIngredients(recipeName, (results) =>{
+              callback(results);
+            })
+          })
         });
       });  
     }
@@ -116,7 +128,8 @@ var recipeDAC = () => {
     const getAllRecipeIngredients = (callback) => {
       mongodb.connect(url, (err, db) => { 
         const ingredientCollection = db.collection('recipeIngredients');
-        ingredientCollection.find({}).toArray((err, results) => {
+        ingredientCollection.find({}).order({ingredient: 1}).toArray((err, results) => {
+          console.log(results);
           callback(results);
         });
       });
@@ -124,7 +137,7 @@ var recipeDAC = () => {
     const getRecipeIngredients = (recipeName, callback) => {
       mongodb.connect(url, (err, db) => { 
         const ingredientCollection = db.collection('recipeIngredients');
-        ingredientCollection.find({recipe:recipeName}).toArray((err, results) => {
+        ingredientCollection.find({recipe:recipeName}).sort({ingredient:1}).toArray((err, results) => {
           callback(results);
         });
       });
@@ -134,6 +147,16 @@ var recipeDAC = () => {
         const ingredientCollection = db.collection('recipeIngredients');
         ingredientCollection.findOne({
           recipe:ingredient.recipe, ingredient:ingredient.ingredient},  (err, data) => { 
+          callback(data);
+        }
+      );
+      });
+    }
+    const ingredientInUse = (ingredient, callback) => {
+      mongodb.connect(url, (err, db) => {
+        const ingredientCollection = db.collection('recipeIngredients');
+        ingredientCollection.findOne({
+          ingredient:ingredient},  (err, data) => { 
           callback(data);
         }
       );
@@ -152,23 +175,18 @@ var recipeDAC = () => {
       mongodb.connect(url, (err, db) => {
             // dont want to insert dups
             let nameList = [];
-            console.log(ingredients);
             for (let ingredient of ingredients) {
                 nameList.push(ingredient.ingredient);
             }
-            console.log(nameList);
         const ingredientCollection = db.collection('recipeIngredients');
         ingredientCollection.find({ingredient: {$exists:true, $in:nameList}}).
             toArray((err, results)=> {
-              console.log(results);
               for (let item of results) {
                 let index = nameList.indexOf(item.ingredient);
                 if (index > -1) {
                     nameList.splice(index, 1);
                 }
             }
-            console.log('new namelist');
-            console.log(nameList);
             let insertList = [];
             for (let item of ingredients) {
                 if (nameList.indexOf(item.ingredient) > -1) {
@@ -176,10 +194,6 @@ var recipeDAC = () => {
                       quantity: item.quantity, unit: item.unit});
                 }
             }
-            console.log('insert list');
-            console.log(insertList);
-
-
             ingredientCollection.insertMany(ingredients,  (err, data) => { 
                 callback(data);
               });
@@ -205,8 +219,26 @@ var recipeDAC = () => {
       });
   
     }
-    return {
-      addDirectionToRecipe : addDirectionToRecipe,
+            
+  const deleteRecipeIngredients = (recipe, callback) => {
+      mongodb.connect(url,  (err, db) => {
+        const collection = db.collection('recipeIngredients');
+        if (recipe) {
+          collection.remove({recipe:{$in:[recipe]}},(err, results) => {
+              callback(results);
+          } );
+
+        } else {
+          collection.remove({}, (err, results) => {
+              callback(results);
+          } );
+          }
+      });
+  }
+            
+  return {
+    deleteRecipeIngredients:deleteRecipeIngredients,
+    addDirectionToRecipe : addDirectionToRecipe,
       getADirection : getADirection,
       getDirections : getDirections,
       getAllDirections : getAllDirections,
@@ -224,7 +256,8 @@ var recipeDAC = () => {
       addIngredientToRecipe : addIngredientToRecipe,
       addIngredientsToRecipes : addIngredientsToRecipes,
       deleteIngredientFromRecipe : deleteIngredientFromRecipe,
-      getRecipesForWeek : getRecipesForWeek
+      getRecipesForWeek : getRecipesForWeek,
+      ingredientInUse : ingredientInUse
     };
 }
 module.exports = recipeDAC;

@@ -7,7 +7,7 @@ var shoppingDAC =  function() {
     const getShoppingList = function (callback) {
         mongodb.connect(url, function (err, db) {
             const collection = db.collection('shoppingList');
-            collection.find({}).toArray(function (err, results) {
+            collection.find({}).sort({ingredient:1}).toArray(function (err, results) {
               callback(results);
           } );
         });
@@ -31,6 +31,8 @@ var shoppingDAC =  function() {
     }
 
     const insertItemsInShoppingList = (orderList, callback) => {
+        console.log(`orderList`);
+        console.log(orderList);
         mongodb.connect(url, function (err, db) {
             const collection = db.collection('shoppingList');
            const nameList = [];
@@ -77,7 +79,7 @@ var shoppingDAC =  function() {
         mongodb.connect(url,function(err, db) { 
             const collection = db.collection('shoppingList');
             collection.remove(item, (err, data) => {
-                collection.find({}).toArray(function (err, results) {
+                getShoppingList((results) => {
                     callback(results);
                 })
             });

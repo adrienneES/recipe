@@ -16,7 +16,7 @@ const ingredientController =  (nav) => {
       // get the categories 
       typesDAC.getCategories(null, (results) => {
         const categoryList = results;
-        ingredientDAC.getIngredients( (results) => {
+        ingredientDAC.getIngredients(null, (results) => {
           const ingredientList = results;
           const utility = require('../utilities/utilities')();
           const message = utility.getMessage(req);
@@ -54,7 +54,14 @@ const ingredientController =  (nav) => {
     const ingredientName = req.body.ingredientName || req.query.ingredientName;
     console.log(`ingredientName = ${ingredientName}`);
     ingredientDAC.deleteIngredient(ingredientName, (results) => {
-      res.redirect('/ingredients');
+      if (!results)      {
+        req.query.error='cantdelete';
+        console.log('cannot delete this becuase of something');
+        res.redirect('/ingredients?error=cant%20delete;%20recipeIngredient%20Exists');
+      }
+      else  {
+        res.redirect('/ingredients');
+      }
     })
   }
   const editIngredient = (req, res) => {
